@@ -1,21 +1,32 @@
-# Portraits: Unsplash License (https://unsplash.com/license). Source photo IDs:
-- p01.jpg — https://images.unsplash.com/photo-1766066014237-00645c74e9c6
-- p03.jpg — https://images.unsplash.com/photo-1603714228681-b399854b8f80
-- p04.jpg — https://images.unsplash.com/photo-1626863905121-3b0c0ed7b94c
-- p06.jpg — https://images.unsplash.com/photo-1702669010463-3f2088abc0e9
-- p07.jpg — https://images.unsplash.com/photo-1742485244548-8f2ccab4b6b3
-- p08.jpg — https://images.unsplash.com/photo-1768919533164-1695daa801e8
-- p09.jpg — https://images.unsplash.com/photo-1577880216142-8549e9488dad
-- p10.jpg — https://images.unsplash.com/photo-1637855190680-5cbe1d870b46
-- p11.jpg — https://images.unsplash.com/photo-1635862630768-4bb1dcb081ae
-- p12.jpg — https://images.unsplash.com/photo-1611432579699-484f7990b127
-- p13.jpg — https://images.unsplash.com/photo-1615891081220-9116de3e1afd
-- p14.jpg — https://images.unsplash.com/photo-1611432579402-7037e3e2c1e4
-- p15.jpg — https://images.unsplash.com/photo-1777384180011-08726f8c5758
-- p16.jpg — https://images.unsplash.com/photo-1632454005805-7bee57f76ee8
-- p17.jpg — https://images.unsplash.com/photo-1573496799515-eebbb63814f2
-- p18.jpg — https://images.unsplash.com/photo-1763739528420-bdc297ff4ec7
-- p19.jpg — https://images.unsplash.com/photo-1764169689207-e23fb66e1fcf
-- p20.jpg — https://images.unsplash.com/photo-1600679472868-eae382e28b34
-- p21.jpg — https://images.unsplash.com/photo-1642929426263-caf1617ced29
-- p22.jpg — https://images.unsplash.com/photo-1618298363483-e31a31f1a1e2
+# Photo credits
+
+## Stock portraits — Magnific (formerly Freepik), free license
+
+Free Magnific assets require attribution. The site footer credits Magnific and these authors.
+
+- `m01.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/portrait-smiling-call-center-operator-talking-audio-headset-mic_416753993.htm
+- `m02.jpg` — Image by ASphotofamily on Magnific — https://www.magnific.com/free-photo/african-american-woman-works-call-center-operator-customer-service-agent-wearing-microphone-headsets-working-laptop_25376384.htm
+- `m03.jpg` — Image by kroshka__nastya on Magnific — https://www.magnific.com/free-photo/beautiful-african-american-woman-green-wall-manager-call-centre-worker-happy-adorable-smiling-welcoming-all-calls_16716766.htm
+- `m06.jpg` — Image by ASphotofamily on Magnific — https://www.magnific.com/free-photo/african-american-woman-works-call-center-operator-customer-service-agent-wearing-microphone-headsets-working-laptop_25376394.htm
+- `m08.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/happy-call-center-agent-providing-step-by-step-guidance-customers_418373778.htm
+- `m09.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/portrait-smiling-technical-support-specialist-call-center-office_418373741.htm
+- `m10.jpg` — Image by diana.grytsku on Magnific — https://www.magnific.com/free-photo/operator-hot-line-portrait-cheerful-african-customer-service-representative-with-headset-call-center_8472124.htm
+- `m11.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/portrait-african-american-young-woman-wearing-headphones-smiling-camera_20461099.htm
+- `m12.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/authentic-smiling-african-american-man-using-laptop-headphones-work-from-home-learn-freel_16047352.htm
+- `m13.jpg` — Image by diana.grytsku on Magnific — https://www.magnific.com/free-photo/young-african-american-manager-with-stubble-sitting-front-open-laptop-wearing-earphones-while-having-video-conference-call-with-business-partners_8472132.htm
+- `m14.jpg` — Image by partystock on Magnific — https://www.magnific.com/free-photo/portrait-woman-business-embrace-confidence-posing-beauty-black-african-american-isolated-gray-background_25767305.htm
+- `m15.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/black-agent-with-headset-giving-thumbs-up_416930795.htm
+- `m16.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/portrait-woman-smiling-sitting-desk-with-computer-working-from-home-business-project-young-adult-looking-camera-using-monitor-with-keyboard-remote-work_22454307.htm
+- `m17.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/african-american-employee-using-headset-customer-service-job-asnwering-call-about-telemarketing-sales-male-operator-working-call-center-office-help-clients-helpline_25700454.htm
+- `m18.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/female-sales-agent-talking-phone-call-client-helping-people-customer-support-service-woman-using-headphones-give-assistance-call-center-workstation-helpdesk_27103603.htm
+- `m19.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/young-woman-using-audio-headset-computer-call-center-job-offering-helpline-assistance-people-female-consultant-talking-clients-customer-care-service-helping-with-telemarketing_27103606.htm
+- `m20.jpg` — Image by kroshka__nastya on Magnific — https://www.magnific.com/free-photo/black-african-man-casual-yellow-wall-blue-hair-call-centre-worker-happy-customer-support-operator-with-headphones_14093569.htm
+
+## CS Week 2025 heroes and community (`/public/heroes`, `/public/community`)
+
+From Ruut's own CS Week 2025 site, https://csweek25.ruut.chat (Oluwatobi Ojo, Bukola Willoby, Eromonsele Oigiagbe, Muibat Alaran and the community gallery).
+
+## Brand
+
+- `/public/brand/csweek-2026-logo.png` — official Customer Service Week 2026 logo (csweek.com; use unaltered, link to CSWeek.com)
+- `/public/brand/ruut-logo.png`, `convert-logo.png`, `ruut-team.jpg` — Ruut assets

@@ -6,6 +6,7 @@ export const runtime = "nodejs";
 export async function GET(_req: Request, ctx: RouteContext<"/api/cards/[id]/photo">) {
   const { id } = await ctx.params;
   const card = await getCard(id);
+  if (card?.photo.startsWith("/")) return Response.redirect(new URL(card.photo, _req.url), 308);
   const match = card ? /^data:(image\/[a-z]+);base64,(.+)$/.exec(card.photo) : null;
   if (!match) return new Response("Not found", { status: 404 });
   return new Response(Buffer.from(match[2], "base64"), {

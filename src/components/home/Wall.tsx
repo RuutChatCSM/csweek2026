@@ -70,7 +70,7 @@ export function Wall({ initial }: { initial: FeedPage }) {
             <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-ink/60">
               <span className="live-dot h-2.5 w-2.5 rounded-full bg-stop" /> Live · updates as people celebrate
             </p>
-            <h2 className="poster mt-3 text-[clamp(56px,10vw,160px)] leading-[0.84] text-ink">
+            <h2 className="poster mt-3 text-[clamp(52px,9vw,148px)] leading-[0.98] text-ink">
               The wall of <span className="text-highway">celebrations</span>
             </h2>
           </div>
@@ -203,8 +203,14 @@ function WallTile({ item, index, isNew }: { item: FeedItem; index: number; isNew
             src={item.photoUrl}
             alt=""
             loading="lazy"
-            className="h-full w-full object-cover object-[50%_25%] transition-transform duration-500 group-hover:scale-[1.04]"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            style={{ objectPosition: item.photoPosition ?? "50% 25%" }}
           />
+          {item.featured && (
+            <span className="absolute left-3 top-3 rounded-sm bg-road px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink">
+              CS Week 2025 hero
+            </span>
+          )}
           {item.example && (
             <span className="absolute left-3 top-3 rounded-sm bg-ink/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cream">
               Example
@@ -220,12 +226,12 @@ function WallTile({ item, index, isNew }: { item: FeedItem; index: number; isNew
         </div>
       )}
       <div className="p-5">
-        <p className="poster text-4xl leading-[0.9]">{item.name}</p>
+        <p className="poster text-4xl leading-none">{item.name}</p>
         <p className="mt-1.5 text-sm font-semibold" style={{ color: theme.muted }}>
           {item.role} · {item.org}
         </p>
         <div className="mt-4 rounded-xl p-4" style={{ background: theme.panel, color: theme.panelInk }}>
-          <p className="font-serif text-xl italic leading-snug">“{item.message}”</p>
+          <p className="font-serif text-xl italic leading-[1.3]">“{item.message}”</p>
           <p className="mt-2 text-xs font-bold uppercase tracking-wider opacity-70">
             {item.mode === "self" ? "Celebrating themself" : item.senderName ? `— ${item.senderName}` : "— A colleague"}
           </p>

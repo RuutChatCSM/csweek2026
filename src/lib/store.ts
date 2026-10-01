@@ -1,6 +1,7 @@
 import "server-only";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { SEED_CARDS } from "./seeds";
 import type { FeedItem, StoredCard } from "./types";
 
 /**
@@ -65,6 +66,7 @@ export async function getCard(id: string, { includeHidden = false } = {}): Promi
       return null;
     }
   }
+  card ??= SEED_CARDS.find((c) => c.id === id) ?? null;
   return card && (includeHidden || !card.hidden) ? card : null;
 }
 
@@ -87,9 +89,32 @@ export function toFeedItem(card: StoredCard): FeedItem {
     senderName: card.senderName,
     mode: card.mode,
     theme: card.theme,
-    photoUrl: card.photo ? `/api/cards/${card.id}/photo` : null,
+    photoUrl: !card.photo ? null : card.photo.startsWith("/") ? card.photo : `/api/cards/${card.id}/photo`,
     createdAt: card.createdAt,
+    featured: card.featured,
   };
+}
+
+// --- Prepopulated cards ---------------------------------------------------------
+
+let seeded: Promise<void> | null = null;
+
+/** Idempotently stores the CS Week 2025 heroes (see lib/seeds.ts) as the oldest wall entries. */
+export function ensureSeeds() {
+  seeded ??= (async () => {
+    for (const card of SEED_CARDS) {
+      if (upstash) {
+        const { result } = await redis(["SET", `card:${card.id}`, JSON.stringify(card), "NX"]);
+        if (result === "OK") await redis(["RPUSH", FEED_KEY, card.id]);
+      } else if (!(await getCard(card.id, { includeHidden: true }))) {
+        await saveCard(card);
+      }
+    }
+  })().catch((e) => {
+    seeded = null;
+    console.error("[seeds] failed", e);
+  });
+  return seeded;
 }
 
 // --- Feed (public wall) -------------------------------------------------------
@@ -123,6 +148,7 @@ async function fsFeed(): Promise<StoredCard[]> {
 
 /** Newest-first page of listed cards. */
 export async function listFeed(offset: number, limit: number): Promise<{ items: FeedItem[]; total: number }> {
+  await ensureSeeds();
   if (upstash) {
     const [{ result: total }, { result: ids }] = await Promise.all([
       redis(["LLEN", FEED_KEY]),

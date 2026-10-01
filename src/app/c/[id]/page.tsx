@@ -54,7 +54,7 @@ export default async function CardPage({ params, searchParams }: PageProps<"/c/[
 
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-ink/50">Customer Service Week 2026</p>
-            <h1 className="poster mt-3 text-[clamp(52px,7vw,110px)] leading-[0.88]">
+            <h1 className="poster mt-3 text-[clamp(52px,7vw,110px)] leading-[1]">
               {fromEmail
                 ? `${first}, this one’s for you.`
                 : self

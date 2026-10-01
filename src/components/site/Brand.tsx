@@ -10,6 +10,8 @@ export function BrandLockup({ className = "", tone = "ink" }: { className?: stri
         alt="Customer Service Week 2026"
         className="h-10 w-auto transition-transform duration-500 group-hover:-translate-y-0.5 sm:h-11"
       />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/brand/ruut-logo.png" alt="Ruut" className="h-8 w-auto sm:h-9" />
       <span className="leading-none">
         <span className={`poster block whitespace-nowrap text-[17px] sm:text-xl ${tone === "light" ? "text-glow" : "text-ink"}`}>
           Ruut × Customer Support Hub

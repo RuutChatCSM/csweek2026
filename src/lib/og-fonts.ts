@@ -47,9 +47,19 @@ export function loadLogoDataUrl() {
 /** Resolves a card photo for Satori: data URLs pass through, local /public paths are inlined. */
 export async function resolvePhotoForOg(photo: string) {
   if (!photo || photo.startsWith("data:")) return photo;
-  if (photo.startsWith("/people/")) {
+  if (/^\/(people|heroes|community)\/[\w-]+\.(jpg|jpeg|png)$/.test(photo)) {
     const buf = await readFile(join(ASSET_DIR, photo));
-    return `data:image/jpeg;base64,${buf.toString("base64")}`;
+    return `data:image/${photo.endsWith(".png") ? "png" : "jpeg"};base64,${buf.toString("base64")}`;
   }
   return "";
+}
+
+let ruutCache: Promise<string> | null = null;
+
+/** Ruut "R" bubble mark as a data URL for Satori. */
+export function loadRuutMarkDataUrl() {
+  ruutCache ??= readFile(join(ASSET_DIR, "brand/ruut-logo.png")).then(
+    (buf) => `data:image/png;base64,${buf.toString("base64")}`,
+  );
+  return ruutCache;
 }

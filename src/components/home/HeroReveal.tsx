@@ -33,7 +33,45 @@ const MOBILE_LINES = ["Celebrating", "the people", "who go the", "extra mile"];
  *  0.22–1.00  the row scrubs sideways; each card flips as it reaches centre to reveal
  *             the message someone wrote
  */
-export function HeroReveal({ people, total }: { people: FeedItem[]; total: number }) {
+type Slide = { key: string; src: string; label: string; position?: string };
+
+/** Interleaves real celebrations, Ruut's CS Week 2025 community and examples into one photo pool. */
+function buildPool(people: FeedItem[], gallery: string[]): Slide[] {
+  const real = people.filter((p) => p.photoUrl && !p.example);
+  const examples = people.filter((p) => p.photoUrl && p.example);
+  const toSlide = (p: FeedItem): Slide => ({
+    key: p.id,
+    src: p.photoUrl!,
+    label: `${firstName(p.name)} · ${p.org}`,
+    position: p.photoPosition,
+  });
+  const extra: Slide[] = gallery.map((src) => ({ key: src, src, label: "CS Week 2025 · Ruut community" }));
+  const out: Slide[] = [];
+  const lanes = [real.map(toSlide), extra, examples.map(toSlide)];
+  for (let i = 0; out.length < lanes.reduce((n, l) => n + l.length, 0); i++)
+    for (const lane of lanes) if (lane[i]) out.push(lane[i]);
+  return out;
+}
+
+/** A counter that ticks every `every` ms, starting after `delay` ms (stops for reduced motion). */
+function useTicker(every: number, delay = 0, enabled = true) {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    if (!enabled) return;
+    let interval = 0;
+    const start = window.setTimeout(() => {
+      setTick((t) => t + 1);
+      interval = window.setInterval(() => setTick((t) => t + 1), every);
+    }, delay);
+    return () => {
+      window.clearTimeout(start);
+      window.clearInterval(interval);
+    };
+  }, [every, delay, enabled]);
+  return tick;
+}
+
+export function HeroReveal({ people, total, gallery }: { people: FeedItem[]; total: number; gallery: string[] }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const cards = people.slice(0, 11);
@@ -71,13 +109,9 @@ export function HeroReveal({ people, total }: { people: FeedItem[]; total: numbe
   const sx = useSpring(mx, { stiffness: 60, damping: 16 });
   const sy = useSpring(my, { stiffness: 60, damping: 16 });
 
-  const [index, setIndex] = useState(0);
-  useEffect(() => {
-    if (reduce || people.length < 2) return;
-    const t = window.setInterval(() => setIndex((i) => (i + 1) % people.length), 2400);
-    return () => window.clearInterval(t);
-  }, [people.length, reduce]);
-  const featured = people[index % Math.max(1, people.length)];
+  const pool = useMemo(() => buildPool(people, gallery), [people, gallery]);
+  const tick = useTicker(2600, 0, !reduce && pool.length > 1);
+  const slide = pool[tick % Math.max(1, pool.length)];
 
   return (
     <section
@@ -112,6 +146,7 @@ export function HeroReveal({ people, total }: { people: FeedItem[]; total: numbe
               className="mb-4 rounded-full bg-highway-mid px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-cream sm:mb-6 sm:text-sm"
             >
               <span aria-hidden>🎉</span> Happy Customer Service Week 2026
+              <span className="hidden sm:inline"> · {CS_WEEK.dates.replace(", 2026", "")}</span>
             </motion.p>
 
             <div className="relative">
@@ -136,25 +171,7 @@ export function HeroReveal({ people, total }: { people: FeedItem[]; total: numbe
                   transition={{ type: "spring", stiffness: 160, damping: 14, delay: 0.75 }}
                   className="relative aspect-[4/3] overflow-hidden rounded-md shadow-[0_24px_50px_-12px_rgba(0,0,0,.6)] ring-4 ring-cream"
                 >
-                  <AnimatePresence initial={false}>
-                    {featured?.photoUrl && (
-                      <motion.img
-                        key={featured.id}
-                        src={featured.photoUrl}
-                        alt=""
-                        initial={{ clipPath: "inset(100% 0 0 0)", scale: 1.15 }}
-                        animate={{ clipPath: "inset(0% 0 0 0)", scale: 1 }}
-                        exit={{ opacity: 0.6 }}
-                        transition={{ duration: 0.8, ease: EXPO }}
-                        className="absolute inset-0 h-full w-full object-cover object-[50%_25%]"
-                      />
-                    )}
-                  </AnimatePresence>
-                  {featured && (
-                    <span className="absolute bottom-1.5 left-1.5 rounded-sm bg-ink/85 px-1.5 py-0.5 text-left text-[9px] font-bold uppercase tracking-wider text-cream sm:bottom-2 sm:left-2 sm:text-[11px]">
-                      {firstName(featured.name)} · {featured.org}
-                    </span>
-                  )}
+                  <SlideImage slide={slide} />
                 </motion.div>
               </Parallax>
 
@@ -182,17 +199,6 @@ export function HeroReveal({ people, total }: { people: FeedItem[]; total: numbe
                 </motion.div>
               </Parallax>
 
-              <Parallax x={sx} y={sy} depth={18} className="absolute left-[2%] -top-[5%] z-20 w-[7%] sm:-left-[5%] sm:top-[2%] sm:w-[4.5%]">
-                <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", delay: 1.35 }}>
-                  <PixelSprite name="heart" color="#F6C343" className="bob w-full [animation-delay:-1.2s]" />
-                </motion.div>
-              </Parallax>
-
-              <Parallax x={sx} y={sy} depth={22} className="absolute right-[18%] -bottom-[4%] z-20 hidden w-[4%] sm:block">
-                <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", delay: 1.45 }}>
-                  <PixelSprite name="sparkle" color="#F6EBD3" className="wobble w-full [animation-duration:3s]" />
-                </motion.div>
-              </Parallax>
             </div>
 
             <motion.p
@@ -201,8 +207,7 @@ export function HeroReveal({ people, total }: { people: FeedItem[]; total: numbe
               transition={{ duration: 0.65, delay: 0.75, ease: "easeOut" }}
               className="mt-6 max-w-xl text-base leading-snug text-glow sm:mt-8 sm:text-xl"
             >
-              Customer Service Week 2026 · {CS_WEEK.dates}. Make a card for someone who makes customers feel looked
-              after, and watch the road fill up.
+              Make a card for someone who makes customers feel looked after.
             </motion.p>
 
             <motion.div
@@ -217,19 +222,13 @@ export function HeroReveal({ people, total }: { people: FeedItem[]; total: numbe
               </Link>
             </motion.div>
 
-            {/* Static pixel blocks, like the reference's squares by the cursor */}
-            <div aria-hidden className="pointer-events-none absolute bottom-[26%] right-[12%] hidden grid-cols-3 gap-0 opacity-70 lg:grid">
-              {[1, 1, 0, 0, 1, 1, 1, 0, 1].map((on, i) => (
-                <span key={i} className={`h-10 w-10 ${on ? (i % 2 ? "bg-highway-mid" : "bg-highway") : ""}`} />
-              ))}
-            </div>
           </div>
 
           {/* Corner portraits, floating */}
-          <FloatingPortraits people={people} x={sx} y={sy} />
+          <FloatingPortraits pool={pool} x={sx} y={sy} enabled={!reduce} />
 
           {/* "Letter from the editor" chip → latest celebration */}
-          {people[0] && <LatestChip item={people[0]} />}
+          <LatestChip people={people} enabled={!reduce} />
         </motion.div>
 
         {/* ---------- REVEAL HEADER (paper phase) ---------- */}
@@ -239,7 +238,7 @@ export function HeroReveal({ people, total }: { people: FeedItem[]; total: numbe
         >
           <div>
             <p className="font-serif text-xl italic text-ink/70 sm:text-3xl">Messages from the road</p>
-            <h2 className="poster text-[clamp(40px,min(6.6vw,11vh),112px)] leading-[0.86] text-ink">
+            <h2 className="poster text-[clamp(40px,min(6.2vw,10vh),104px)] leading-[1] text-ink">
               They went the <br className="sm:hidden" />
               <span className="text-stop">extra mile</span>
             </h2>
@@ -253,7 +252,7 @@ export function HeroReveal({ people, total }: { people: FeedItem[]; total: numbe
         </motion.div>
 
         {/* ---------- FAN → ROW → FLIP ---------- */}
-        <div className="absolute inset-0 z-[15] [perspective:1800px]">
+        <div className="pointer-events-none absolute inset-0 z-[15] [perspective:1800px]">
           {cards.map((c, i) => (
             <FanCard key={c.id} item={c} i={i} n={n} p={p} focus={focus} vw={vw} vh={vh} />
           ))}
@@ -276,8 +275,8 @@ function PosterLine({ text, delay, mobile = false }: { text: string; delay: numb
   const words = text.split(" ");
   return (
     <span
-      className={`block overflow-hidden pb-[0.02em] leading-[0.86] ${
-        mobile ? "text-[min(18.5vw,10vh)]" : "text-[clamp(48px,min(12.4vw,15.5vh),190px)]"
+      className={`block overflow-hidden leading-[1.02] ${
+        mobile ? "text-[min(17vw,9vh)]" : "text-[clamp(44px,min(11.2vw,13.5vh),176px)]"
       }`}
     >
       <motion.span
@@ -346,6 +345,8 @@ function TicketButton({ href, children }: { href: string; children: React.ReactN
 }
 
 function HeroNav({ total }: { total: number }) {
+  const link =
+    "rounded-full bg-highway-mid px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cream/90 transition hover:bg-highway hover:text-cream";
   return (
     <motion.header
       initial={{ opacity: 0, y: -16 }}
@@ -353,41 +354,25 @@ function HeroNav({ total }: { total: number }) {
       transition={{ duration: 0.6, ease: EXPO }}
       className="absolute inset-x-0 top-0 z-30 mx-auto flex max-w-[1500px] items-center justify-between gap-3 px-4 py-4 sm:px-8 sm:py-6"
     >
-      <nav className="hidden items-center gap-1.5 md:flex">
-        {[
-          ["How it works", "#how"],
-          ["The wall", "#wall"],
-          ["Celebrate yourself", "/create?mode=self"],
-        ].map(([label, href]) => (
-          <a
-            key={href}
-            href={href}
-            className="rounded-full bg-highway-mid px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cream/90 transition hover:bg-highway hover:text-cream"
-          >
-            {label}
-          </a>
-        ))}
-      </nav>
-      <Link href="/" className="text-left md:absolute md:left-1/2 md:-translate-x-1/2 md:text-center">
-        <span className="poster block text-xl leading-none text-glow sm:text-[26px]">Ruut × Customer Support Hub</span>
-        <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-glow/80">Presents CS Week 2026</span>
+      <Link href="/" className="flex items-center gap-2.5">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/ruut-logo.png" alt="Ruut" className="h-9 w-auto sm:h-10" />
+        <span className="poster whitespace-nowrap text-lg leading-none text-glow sm:text-2xl">
+          Ruut × <span className="hidden sm:inline">Customer Support Hub</span>
+          <span className="sm:hidden">CS Hub</span>
+        </span>
       </Link>
-      <div className="flex items-center gap-2">
-        <a
-          href="#wall"
-          className="relative grid h-10 w-10 place-items-center rounded-full bg-highway-mid text-cream"
-          aria-label={`${total} celebrations on the wall`}
-        >
-          <PixelSprite name="heart" color="#E23B2E" outline="transparent" shadow="transparent" className="h-4 w-4" />
-          {total > 0 && (
-            <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-stop px-1 text-center text-[10px] font-bold leading-5 text-white">
-              {total > 999 ? "999+" : total}
-            </span>
-          )}
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        <a href="#how" className={`${link} hidden md:inline-flex`}>
+          How it works
+        </a>
+        <a href="#wall" className={`${link} hidden items-center gap-2 md:inline-flex`} aria-label={`The wall, ${total} celebrations`}>
+          The wall
+          {total > 0 && <span className="rounded-full bg-stop px-1.5 text-[10px] leading-4 text-white">{total > 999 ? "999+" : total}</span>}
         </a>
         <Link
           href="/create"
-          className="poster whitespace-nowrap rounded-md bg-cream px-4 py-2.5 text-sm tracking-wide text-ink transition hover:-translate-y-0.5"
+          className="poster ml-1 whitespace-nowrap rounded-md bg-cream px-4 py-2.5 text-sm tracking-wide text-ink transition hover:-translate-y-0.5"
         >
           Make a card
         </Link>
@@ -396,58 +381,125 @@ function HeroNav({ total }: { total: number }) {
   );
 }
 
+function SlideImage({ slide, className = "" }: { slide?: Slide; className?: string }) {
+  return (
+    <>
+      <AnimatePresence initial={false}>
+        {slide && (
+          <motion.img
+            key={slide.key}
+            src={slide.src}
+            alt=""
+            initial={{ clipPath: "inset(100% 0 0 0)", scale: 1.15 }}
+            animate={{ clipPath: "inset(0% 0 0 0)", scale: 1 }}
+            exit={{ opacity: 0.6 }}
+            transition={{ duration: 0.8, ease: EXPO }}
+            className={`absolute inset-0 h-full w-full object-cover ${className}`}
+            style={{ objectPosition: slide.position ?? "50% 25%" }}
+          />
+        )}
+      </AnimatePresence>
+      {slide && (
+        <span className="absolute bottom-1.5 left-1.5 max-w-[90%] truncate rounded-sm bg-ink/85 px-1.5 py-0.5 text-left text-[9px] font-bold uppercase tracking-wider text-cream sm:bottom-2 sm:left-2 sm:text-[11px]">
+          {slide.label}
+        </span>
+      )}
+    </>
+  );
+}
+
 const CORNERS = [
-  { cls: "left-[2.5%] top-[58%]", r: -7, depth: 50, d: "7s", anim: "float-a" },
-  { cls: "right-[2.5%] top-[17%]", r: 7, depth: 46, d: "6.5s", anim: "float-b" },
+  { cls: "left-[2.5%] top-[56%]", r: -7, depth: 50, d: "7s", anim: "float-a", offset: 5, delay: 900 },
+  { cls: "right-[2.5%] top-[16%]", r: 7, depth: 46, d: "6.5s", anim: "float-b", offset: 11, delay: 1700 },
 ];
 
-function FloatingPortraits({ people, x, y }: { people: FeedItem[]; x: MotionValue<number>; y: MotionValue<number> }) {
-  const picks = useMemo(() => people.filter((p) => p.photoUrl).slice(1, 3), [people]);
+/** Two floating polaroids in the corners, each switching on its own beat. */
+function FloatingPortraits({
+  pool,
+  x,
+  y,
+  enabled,
+}: {
+  pool: Slide[];
+  x: MotionValue<number>;
+  y: MotionValue<number>;
+  enabled: boolean;
+}) {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 hidden xl:block">
-      {picks.map((person, i) => {
-        const c = CORNERS[i];
-        return (
-          <Parallax key={person.id} x={x} y={y} depth={c.depth} className={`absolute w-[7.5vw] max-w-[130px] ${c.cls}`}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.88, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: EXPO, delay: 1.1 + i * 0.12 }}
-            >
-              <div className={`${c.anim} rounded-md bg-cream p-1.5 shadow-xl`} style={{ ["--r" as string]: `${c.r}deg`, ["--d" as string]: c.d }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={person.photoUrl!} alt="" className="aspect-[4/5] w-full rounded-sm object-cover" />
-                <p className="mt-1 truncate text-[10px] font-bold uppercase tracking-wide text-ink">{firstName(person.name)}</p>
-              </div>
-            </motion.div>
-          </Parallax>
-        );
-      })}
+      {CORNERS.map((c, i) => (
+        <Parallax key={i} x={x} y={y} depth={c.depth} className={`absolute w-[8vw] max-w-[140px] ${c.cls}`}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.88, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: EXPO, delay: 1.1 + i * 0.12 }}
+          >
+            <div className={`${c.anim} rounded-md bg-cream p-1.5 shadow-xl`} style={{ ["--r" as string]: `${c.r}deg`, ["--d" as string]: c.d }}>
+              <CornerSlot pool={pool} offset={c.offset} delay={c.delay} enabled={enabled} />
+            </div>
+          </motion.div>
+        </Parallax>
+      ))}
     </div>
   );
 }
 
-function LatestChip({ item }: { item: FeedItem }) {
+function CornerSlot({ pool, offset, delay, enabled }: { pool: Slide[]; offset: number; delay: number; enabled: boolean }) {
+  const tick = useTicker(2600, delay, enabled && pool.length > 1);
+  const slide = pool[(tick + offset) % Math.max(1, pool.length)];
+  return (
+    <div className="relative aspect-[4/5] w-full overflow-hidden rounded-sm bg-highway">
+      <SlideImage slide={slide ? { ...slide, label: slide.label.split(" · ")[0] } : undefined} />
+    </div>
+  );
+}
+
+/** "Letter from the editor" chip, rotating through the latest celebrations. */
+function LatestChip({ people, enabled }: { people: FeedItem[]; enabled: boolean }) {
+  const recent = useMemo(() => {
+    const real = people.filter((p) => !p.example);
+    return (real.length ? real : people).slice(0, 6);
+  }, [people]);
+  const tick = useTicker(4200, 2000, enabled && recent.length > 1);
+  const item = recent[tick % Math.max(1, recent.length)];
+  if (!item) return null;
   const href = item.example ? "#wall" : `/c/${item.id}`;
+  const label = item.example ? "Example" : item.featured ? "CS Week 2025 hero" : "Just celebrated";
   return (
     <motion.a
       href={href}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: EXPO, delay: 1.6 }}
-      className="absolute bottom-5 right-4 z-30 hidden items-center gap-3 rounded-2xl bg-white p-2 pl-4 text-left text-ink shadow-[0_20px_40px_-12px_rgba(0,0,0,.5)] transition hover:-translate-y-0.5 sm:right-8 sm:flex"
+      className="absolute bottom-5 right-4 z-30 hidden w-[290px] items-center gap-3 rounded-2xl bg-white p-2 pl-4 text-left text-ink shadow-[0_20px_40px_-12px_rgba(0,0,0,.5)] transition hover:-translate-y-0.5 sm:right-8 sm:flex"
     >
-      <span>
-        <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ink/50">
-          <span className="live-dot h-2 w-2 rounded-full bg-stop" /> {item.example ? "Example" : "Just celebrated"}
-        </span>
-        <span className="block text-[15px] font-bold">{item.name}</span>
-        <span className="block text-sm text-ink/60">→ Read the message</span>
-      </span>
-      {item.photoUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={item.photoUrl} alt="" className="h-14 w-14 rounded-xl object-cover" />
-      )}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={item.id}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="flex min-w-0 flex-1 items-center gap-3"
+        >
+          <span className="min-w-0 flex-1">
+            <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ink/50">
+              <span className="live-dot h-2 w-2 shrink-0 rounded-full bg-stop" /> {label}
+            </span>
+            <span className="block truncate text-[15px] font-bold">{item.name}</span>
+            <span className="block text-sm text-ink/60">→ Read the message</span>
+          </span>
+          {item.photoUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={item.photoUrl}
+              alt=""
+              className="h-14 w-14 shrink-0 rounded-xl object-cover"
+              style={{ objectPosition: item.photoPosition ?? "50% 25%" }}
+            />
+          )}
+        </motion.span>
+      </AnimatePresence>
     </motion.a>
   );
 }
@@ -511,7 +563,13 @@ function FanCard({
   const scale = useTransform(deps, (v: number[]) => at(v).s);
   const opacity = useTransform(deps, (v: number[]) => at(v).o);
   const zIndex = useTransform(deps, (v: number[]) => at(v).z);
-  const rotateY = useTransform(deps, (v: number[]) => at(v).flip * 180);
+  const flip = useTransform(deps, (v: number[]) => at(v).flip);
+  const rotateY = useTransform(flip, (f) => f * 180);
+  // Swap faces at the half-turn instead of relying on backface-visibility (unreliable in Safari).
+  const frontOpacity = useTransform(flip, (f) => (f < 0.5 ? 1 : 0));
+  const backOpacity = useTransform(flip, (f) => (f < 0.5 ? 0 : 1));
+  const backPointer = useTransform(flip, (f) => (f > 0.9 ? "auto" : "none"));
+  const href = item.example ? undefined : `/c/${item.id}`;
   const marginLeft = useTransform(width, (w) => -w / 2);
   const marginTop = useTransform(width, (w) => (-w * 1.25) / 2);
   const height = useTransform(width, (w) => w * 1.25);
@@ -529,33 +587,54 @@ function FanCard({
       >
         <motion.div className="relative h-full w-full [transform-style:preserve-3d]" style={{ rotateY }}>
           {/* Front: tinted portrait */}
-          <div className="absolute inset-0 overflow-hidden rounded-2xl bg-white p-[5px] shadow-[0_30px_60px_-24px_rgba(0,0,0,.55)] [backface-visibility:hidden]">
+          <motion.div
+            className="absolute inset-0 overflow-hidden rounded-2xl bg-white p-[5px] shadow-[0_30px_60px_-24px_rgba(0,0,0,.55)]"
+            style={{ opacity: frontOpacity }}
+          >
             <div className="relative h-full w-full overflow-hidden rounded-[12px]" style={{ background: theme.bg }}>
               {item.photoUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.photoUrl} alt="" className="absolute inset-0 h-full w-full object-cover grayscale contrast-125" />
+                <img
+                  src={item.photoUrl}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover grayscale contrast-125"
+                  style={{ objectPosition: item.photoPosition ?? "50% 25%" }}
+                />
               )}
               <div className="absolute inset-0 mix-blend-multiply" style={{ background: theme.bg }} />
               <div className="absolute inset-0 mix-blend-screen opacity-40" style={{ background: theme.duo[1] }} />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-3 pt-12">
-                <p className="poster text-[clamp(22px,2.4vw,38px)] leading-[0.9] text-white">{item.name}</p>
-                <p className="mt-1 truncate text-[11px] font-semibold text-white/80">{item.role}</p>
+                {item.featured && (
+                  <p className="mb-1.5 inline-block rounded-sm bg-road px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink">
+                    CS Week 2025 hero
+                  </p>
+                )}
+                <p className="poster text-[clamp(22px,2.4vw,38px)] leading-none text-white">{item.name}</p>
+                <p className="mt-1 truncate text-[11px] font-semibold text-white/80">
+                  {item.role} · {item.org}
+                </p>
               </div>
             </div>
-          </div>
+          </motion.div>
           {/* Back: the message */}
-          <div
-            className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl p-4 shadow-[0_30px_60px_-24px_rgba(0,0,0,.55)] [backface-visibility:hidden] [transform:rotateY(180deg)] sm:p-5"
-            style={{ background: theme.panel, color: theme.panelInk }}
+          <motion.a
+            href={href}
+            className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl p-4 shadow-[0_30px_60px_-24px_rgba(0,0,0,.55)] [transform:rotateY(180deg)] sm:p-5"
+            style={{ background: theme.panel, color: theme.panelInk, opacity: backOpacity, pointerEvents: backPointer }}
           >
             <span className="poster text-5xl leading-[0.6]" style={{ color: theme.quote }}>
               “
             </span>
-            <p className="mt-2 line-clamp-7 flex-1 font-serif text-[clamp(17px,1.5vw,23px)] italic leading-[1.15]">{item.message}</p>
+            <p className="mt-2 line-clamp-7 flex-1 font-serif text-[clamp(17px,1.5vw,23px)] italic leading-[1.22]">{item.message}</p>
             <div className="mt-3 flex items-center gap-2 border-t border-current/15 pt-3">
               {item.photoUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.photoUrl} alt="" className="h-9 w-9 rounded-full object-cover" />
+                <img
+                  src={item.photoUrl}
+                  alt=""
+                  className="h-9 w-9 rounded-full object-cover"
+                  style={{ objectPosition: item.photoPosition ?? "50% 25%" }}
+                />
               )}
               <div className="min-w-0 text-left">
                 <p className="truncate text-sm font-bold">To {firstName(item.name)}</p>
@@ -564,7 +643,7 @@ function FanCard({
                 </p>
               </div>
             </div>
-          </div>
+          </motion.a>
         </motion.div>
       </motion.div>
     </motion.div>

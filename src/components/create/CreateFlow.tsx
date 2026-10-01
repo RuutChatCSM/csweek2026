@@ -597,7 +597,7 @@ function Progress({ step, onJump }: { step: number; onJump: (i: number) => void 
 function Step({ title, lede, children }: { title: string; lede: string; children: ReactNode }) {
   return (
     <div>
-      <h1 className="poster mt-3 max-w-3xl text-balance text-[clamp(44px,6.4vw,96px)] leading-[0.88]">
+      <h1 className="poster mt-3 max-w-3xl text-balance text-[clamp(44px,6.4vw,96px)] leading-[1]">
         {title}
       </h1>
       <p className="mt-4 max-w-xl text-lg leading-relaxed text-ink/65">{lede}</p>
@@ -782,7 +782,7 @@ function Done({
   return (
     <div className="pop">
       <p className="text-sm font-bold uppercase tracking-[0.2em] text-ink/50">You went the extra mile</p>
-      <h1 className="poster mt-3 max-w-3xl text-[clamp(48px,7vw,104px)] leading-[0.88]">
+      <h1 className="poster mt-3 max-w-3xl text-[clamp(48px,7vw,104px)] leading-[1]">
         {self ? "Here’s to you. 🎉" : `${firstNameOf(data.name)}’s card is ready.`}
       </h1>
 

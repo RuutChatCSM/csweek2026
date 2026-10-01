@@ -24,6 +24,8 @@ export type StoredCard = CardData & {
   listed?: boolean;
   /** Removed by a moderator */
   hidden?: boolean;
+  /** Prepopulated CS Week 2025 hero */
+  featured?: boolean;
   email: {
     status: EmailStatus;
     recipientFirstName?: string;
@@ -44,6 +46,10 @@ export type FeedItem = {
   createdAt: string;
   /** Sample celebration shown while the wall is still filling up */
   example?: boolean;
+  /** One of Ruut's CS Week 2025 "Mission Possible" heroes */
+  featured?: boolean;
+  /** CSS object-position for the photo crop */
+  photoPosition?: string;
 };
 
 export type FeedPage = {

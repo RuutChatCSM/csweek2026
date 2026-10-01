@@ -60,7 +60,7 @@ export function HowItWorks() {
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-8 sm:py-32">
         <Reveal>
           <p className="font-serif text-2xl italic text-glow">Four miles, one minute</p>
-          <h2 className="poster mt-2 max-w-4xl text-[clamp(52px,8vw,128px)] leading-[0.86] text-glow">
+          <h2 className="poster mt-2 max-w-4xl text-[clamp(52px,8vw,128px)] leading-[1] text-glow">
             A greeting card, <span className="text-road">not a form</span>
           </h2>
         </Reveal>
@@ -85,31 +85,72 @@ export function HowItWorks() {
 }
 
 export function PoweredBy() {
-  const tiles = [
-    { name: "Ruut", body: "Powering better customer experiences across every channel.", cls: "bg-highway text-cream" },
-    { name: "Convert by Ruut", body: "Powering the delivery of every celebration email sent from this page.", cls: "bg-road text-ink" },
-    { name: "You", body: "The people actually delivering those experiences, every single day.", cls: "bg-stop text-cream" },
-  ];
   return (
     <section className="relative bg-paper">
       <div aria-hidden className="dot-grid absolute inset-0" />
       <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-8 sm:py-32">
         <Reveal>
           <p className="font-serif text-2xl italic text-ink/60">The story behind the celebration</p>
-          <h2 className="poster mt-2 max-w-5xl text-[clamp(48px,7.4vw,118px)] leading-[0.86]">
+          <h2 className="poster mt-2 max-w-5xl text-[clamp(48px,7.4vw,118px)] leading-[1]">
             Great experiences have <span className="text-highway">people</span> behind them
           </h2>
         </Reveal>
-        <div className="mt-14 grid gap-4 md:grid-cols-3">
-          {tiles.map((t, i) => (
-            <Reveal key={t.name} delay={i * 0.1}>
-              <div className={`h-full rounded-2xl p-8 transition-transform duration-300 hover:-rotate-1 hover:scale-[1.02] ${t.cls}`}>
-                <p className="poster text-4xl">{t.name}</p>
-                <p className="mt-3 text-lg opacity-85">{t.body}</p>
+
+        {/* The team behind Ruut */}
+        <Reveal className="mt-14">
+          <figure className="group relative overflow-hidden rounded-3xl shadow-[0_40px_80px_-40px_rgba(0,0,0,.6)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/ruut-team.jpg"
+              alt="The Ruut team laughing together on a sofa in their purple Ruut Chat t-shirts"
+              loading="lazy"
+              className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02] sm:aspect-[2/1]"
+            />
+            <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+            <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-8">
+              <div>
+                <p className="poster text-3xl leading-[1] text-white sm:text-5xl">The people behind Ruut</p>
+                <p className="mt-2 max-w-md text-sm text-white/80 sm:text-base">
+                  Redefining customer experience across Africa, and celebrating the people who deliver it.
+                </p>
               </div>
-            </Reveal>
-          ))}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand/ruut-logo.png" alt="Ruut" className="h-14 w-auto shrink-0 drop-shadow-lg sm:h-20" />
+            </figcaption>
+          </figure>
+        </Reveal>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          <Reveal delay={0}>
+            <a
+              href="https://ruut.chat"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-full flex-col rounded-2xl bg-[linear-gradient(135deg,#D88BD0,#8B3EF0)] p-8 text-white transition-transform duration-300 hover:-rotate-1 hover:scale-[1.02]"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand/ruut-logo.png" alt="" className="h-14 w-14 rounded-2xl bg-white p-2 shadow-md" />
+              <p className="poster mt-6 text-4xl">Ruut</p>
+              <p className="mt-2 text-lg opacity-90">Powering better customer experiences across every channel.</p>
+            </a>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="flex h-full flex-col rounded-2xl bg-[#1a1a2e] p-8 text-white transition-transform duration-300 hover:rotate-1 hover:scale-[1.02]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand/convert-logo.png" alt="Convert" className="h-8 w-auto self-start" />
+              <p className="poster mt-6 text-4xl">Convert by Ruut</p>
+              <p className="mt-2 text-lg opacity-80">Powering the delivery of every celebration email sent from this page.</p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.2}>
+            <div className="flex h-full flex-col rounded-2xl bg-stop p-8 text-cream transition-transform duration-300 hover:-rotate-1 hover:scale-[1.02]">
+              <PixelSprite name="headset" color="#F6C343" outline="#141414" className="h-12 w-12" />
+              <p className="poster mt-6 text-4xl">You</p>
+              <p className="mt-2 text-lg opacity-90">The people actually delivering those experiences, every single day.</p>
+            </div>
+          </Reveal>
         </div>
+
         <Reveal className="mt-16 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
           <Link
             href="/create"
@@ -185,7 +226,9 @@ export function HomeFooter() {
     <footer className="bg-ink text-cream">
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-16 sm:px-8 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="poster text-[clamp(48px,8vw,120px)] leading-[0.86] text-glow">Go the extra mile.</p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/ruut-logo.png" alt="Ruut" className="mb-6 h-14 w-auto" />
+          <p className="poster text-[clamp(48px,8vw,120px)] leading-[1] text-glow">Go the extra mile.</p>
           <p className="mt-4 max-w-md text-cream/60">
             A Ruut × Customer Support Hub celebration of the people behind great customer experiences. Emails delivered with{" "}
             <strong className="text-cream">Convert by Ruut</strong>.
@@ -204,7 +247,11 @@ export function HomeFooter() {
               CSWeek.com
             </a>
             <br />
-            Portraits via Unsplash
+            Stock portraits:{" "}
+            <a href="https://www.magnific.com" target="_blank" rel="noopener noreferrer" className="underline">
+              Magnific
+            </a>{" "}
+            (DC Studio, ASphotofamily, diana.grytsku, kroshka__nastya, partystock)
           </p>
         </div>
       </div>

@@ -122,10 +122,12 @@ export function CardArt({
   data,
   fonts = OG_FONTS,
   logoSrc = CS_WEEK.logo,
+  ruutSrc = "/brand/ruut-logo.png",
 }: {
   data: CardData;
   fonts?: CardFonts;
   logoSrc?: string;
+  ruutSrc?: string;
 }) {
   const theme = getTheme(data.theme);
   const self = data.mode === "self";
@@ -222,7 +224,7 @@ export function CardArt({
             style={flex({
               fontFamily: fonts.poster,
               fontSize: posterSize(name, columnWidth, 132),
-              lineHeight: 0.92,
+              lineHeight: 1.02,
               textTransform: "uppercase",
               opacity: placeholder(data.name),
               flexWrap: "wrap",
@@ -281,6 +283,8 @@ export function CardArt({
         <div style={flex({ justifyContent: "space-between", alignItems: "center", fontSize: 26 })}>
           <div style={flex({ fontWeight: 700 })}>{signoff}</div>
           <div style={flex({ alignItems: "center", gap: 10, fontWeight: 600, color: theme.muted })}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={ruutSrc} alt="" width={34} height={35} style={{ width: 34, height: 35 }} />
             <span style={{ fontWeight: 800, color: theme.ink }}>Ruut</span>
             <span>×</span>
             <span style={{ fontWeight: 800, color: theme.ink }}>Customer Support Hub</span>

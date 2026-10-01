@@ -4,6 +4,9 @@ import { FloatingCTA, HomeFooter, HowItWorks, PoweredBy, ThanksMarquee } from "@
 import { SmoothScroll } from "@/components/home/SmoothScroll";
 import { Wall } from "@/components/home/Wall";
 import { getFeedPage, getShowcase } from "@/lib/feed";
+import { COMMUNITY_PHOTOS, HERO_EVENT_PHOTOS } from "@/lib/gallery";
+
+const GALLERY = [...HERO_EVENT_PHOTOS, ...COMMUNITY_PHOTOS];
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   await connection(); // always render with the latest celebrations
@@ -13,7 +16,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   return (
     <SmoothScroll>
       <main className="overflow-x-clip">
-        <HeroReveal people={showcase.items} total={showcase.total} />
+        <HeroReveal people={showcase.items} total={showcase.total} gallery={GALLERY} />
         <ThanksMarquee />
         <Wall initial={wall} />
         <HowItWorks />
