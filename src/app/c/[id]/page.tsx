@@ -68,7 +68,16 @@ export default async function CardPage({ params, searchParams }: PageProps<"/c/[
               <h2 className="poster mb-4 text-4xl">
                 {fromEmail ? "Show it off" : "Share the celebration"}
               </h2>
-              <ShareActions id={id} name={card.name} role={card.role} org={card.org} self={self} url={url} />
+              <ShareActions
+                id={id}
+                name={card.name}
+                role={card.role}
+                org={card.org}
+                self={self}
+                url={url}
+                perspective={fromEmail ? "recipient" : "viewer"}
+                senderName={card.senderName}
+              />
             </div>
 
             <div className="mt-10 max-w-2xl rounded-[2rem] bg-ink p-7 text-paper sm:p-9">

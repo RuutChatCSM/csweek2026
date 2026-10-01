@@ -126,21 +126,32 @@ export function PoweredBy() {
               href="https://ruut.chat"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-full flex-col rounded-2xl bg-[linear-gradient(135deg,#D88BD0,#8B3EF0)] p-8 text-white transition-transform duration-300 hover:-rotate-1 hover:scale-[1.02]"
+              className="group flex h-full flex-col rounded-2xl bg-[linear-gradient(135deg,#D88BD0,#8B3EF0)] p-8 text-white transition-transform duration-300 hover:-rotate-1 hover:scale-[1.02]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/brand/ruut-logo.png" alt="" className="h-14 w-14 rounded-2xl bg-white p-2 shadow-md" />
               <p className="poster mt-6 text-4xl">Ruut</p>
               <p className="mt-2 text-lg opacity-90">Powering better customer experiences across every channel.</p>
+              <span className="mt-auto pt-6 text-sm font-bold">
+                ruut.chat <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
+              </span>
             </a>
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="flex h-full flex-col rounded-2xl bg-[#1a1a2e] p-8 text-white transition-transform duration-300 hover:rotate-1 hover:scale-[1.02]">
+            <a
+              href="https://convert.ruut.chat"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex h-full flex-col rounded-2xl bg-[#1a1a2e] p-8 text-white transition-transform duration-300 hover:rotate-1 hover:scale-[1.02]"
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/brand/convert-logo.png" alt="Convert" className="h-8 w-auto self-start" />
               <p className="poster mt-6 text-4xl">Convert by Ruut</p>
               <p className="mt-2 text-lg opacity-80">Powering the delivery of every celebration email sent from this page.</p>
-            </div>
+              <span className="mt-auto pt-6 text-sm font-bold text-road">
+                convert.ruut.chat <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
+              </span>
+            </a>
           </Reveal>
           <Reveal delay={0.2}>
             <div className="flex h-full flex-col rounded-2xl bg-stop p-8 text-cream transition-transform duration-300 hover:-rotate-1 hover:scale-[1.02]">

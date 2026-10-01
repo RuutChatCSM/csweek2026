@@ -834,7 +834,7 @@ function Done({
         )}
       </p>
       <div className="mt-5 max-w-2xl">
-        {origin && <ShareActions id={result.id} name={data.name} role={data.role} org={data.org} self={self} url={url} />}
+        {origin && <ShareActions id={result.id} name={data.name} role={data.role} org={data.org} self={self} url={url} perspective="creator" />}
       </div>
 
       <div className="mt-10 rounded-[2rem] bg-ink p-7 text-paper sm:p-9">
