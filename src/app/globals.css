@@ -1,26 +1,122 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f6f3ec;
+  --ink: #16161a;
+  --signal: #ffc629;
+  --ruut: #0059ff;
+  --lime: #cadb8a;
+  --violet: #8e55d9;
+  --coral: #ff6b4a;
+  color-scheme: light;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-signal: var(--signal);
+  --color-ruut: var(--ruut);
+  --color-lime: var(--lime);
+  --color-violet: var(--violet);
+  --color-coral: var(--coral);
+  --font-display: var(--font-display);
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--paper);
+  color: var(--ink);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+  background: var(--paper);
+}
+
+::selection {
+  background: var(--signal);
+  color: var(--ink);
+}
+
+/* Dot grid used behind the hero and the builder */
+.dot-grid {
+  background-image: radial-gradient(rgba(22, 22, 26, 0.16) 1.2px, transparent 1.3px);
+  background-size: 22px 22px;
+}
+
+/* The "road" dashed line motif */
+.road-dashes {
+  background-image: linear-gradient(90deg, currentColor 0 55%, transparent 55% 100%);
+  background-size: 34px 100%;
+}
+
+@keyframes drive {
+  to {
+    background-position: -340px 0;
+  }
+}
+.road-dashes.moving {
+  animation: drive 6s linear infinite;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px) rotate(var(--r, 0deg));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--r, 0deg));
+  }
+}
+.rise {
+  animation: rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  animation: marquee 38s linear infinite;
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(8deg);
+  }
+}
+.wobble {
+  animation: wobble 5s ease-in-out infinite;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.94);
+  }
+  60% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.pop {
+  animation: pop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .marquee,
+  .wobble,
+  .pop,
+  .road-dashes.moving {
+    animation: none !important;
+  }
 }
