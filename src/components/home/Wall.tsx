@@ -70,7 +70,7 @@ export function Wall({ initial }: { initial: FeedPage }) {
             <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-ink/60">
               <span className="live-dot h-2.5 w-2.5 rounded-full bg-stop" /> Live · updates as people celebrate
             </p>
-            <h2 className="poster mt-3 text-[clamp(52px,9vw,148px)] leading-[0.98] text-ink">
+            <h2 className="poster mt-3 text-[clamp(52px,9vw,148px)] leading-[0.92] text-ink">
               The wall of <span className="text-highway">celebrations</span>
             </h2>
           </div>

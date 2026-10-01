@@ -60,7 +60,7 @@ export function HowItWorks() {
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-8 sm:py-32">
         <Reveal>
           <p className="font-serif text-2xl italic text-glow">Four miles, one minute</p>
-          <h2 className="poster mt-2 max-w-4xl text-[clamp(52px,8vw,128px)] leading-[1] text-glow">
+          <h2 className="poster mt-2 max-w-4xl text-[clamp(52px,8vw,128px)] leading-[0.92] text-glow">
             A greeting card, <span className="text-road">not a form</span>
           </h2>
         </Reveal>
@@ -91,7 +91,7 @@ export function PoweredBy() {
       <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-8 sm:py-32">
         <Reveal>
           <p className="font-serif text-2xl italic text-ink/60">The story behind the celebration</p>
-          <h2 className="poster mt-2 max-w-5xl text-[clamp(48px,7.4vw,118px)] leading-[1]">
+          <h2 className="poster mt-2 max-w-5xl text-[clamp(48px,7.4vw,118px)] leading-[0.92]">
             Great experiences have <span className="text-highway">people</span> behind them
           </h2>
         </Reveal>
@@ -109,7 +109,7 @@ export function PoweredBy() {
             <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
             <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-8">
               <div>
-                <p className="poster text-3xl leading-[1] text-white sm:text-5xl">The people behind Ruut</p>
+                <p className="poster text-3xl leading-[0.92] text-white sm:text-5xl">The people behind Ruut</p>
                 <p className="mt-2 max-w-md text-sm text-white/80 sm:text-base">
                   Redefining customer experience across Africa, and celebrating the people who deliver it.
                 </p>
@@ -228,7 +228,7 @@ export function HomeFooter() {
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/ruut-logo.png" alt="Ruut" className="mb-6 h-14 w-auto" />
-          <p className="poster text-[clamp(48px,8vw,120px)] leading-[1] text-glow">Go the extra mile.</p>
+          <p className="poster text-[clamp(48px,8vw,120px)] leading-[0.92] text-glow">Go the extra mile.</p>
           <p className="mt-4 max-w-md text-cream/60">
             A Ruut × Customer Support Hub celebration of the people behind great customer experiences. Emails delivered with{" "}
             <strong className="text-cream">Convert by Ruut</strong>.

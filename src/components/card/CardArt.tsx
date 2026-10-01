@@ -224,7 +224,7 @@ export function CardArt({
             style={flex({
               fontFamily: fonts.poster,
               fontSize: posterSize(name, columnWidth, 132),
-              lineHeight: 1.02,
+              lineHeight: 0.96,
               textTransform: "uppercase",
               opacity: placeholder(data.name),
               flexWrap: "wrap",

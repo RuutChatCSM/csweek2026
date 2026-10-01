@@ -94,7 +94,7 @@ export function OgArt({ data, logoSrc }: { data: CardData; logoSrc: string }) {
             marginTop: 8,
             fontFamily: OG_FONTS.poster,
             fontSize: name.length > 16 ? 82 : 104,
-            lineHeight: 1.02,
+            lineHeight: 0.96,
             textTransform: "uppercase",
             paddingRight: 120,
           }}

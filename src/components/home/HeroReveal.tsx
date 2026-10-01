@@ -138,7 +138,7 @@ export function HeroReveal({ people, total, gallery }: { people: FeedItem[]; tot
           <PixelTrail />
           <HeroNav total={total} />
 
-          <div className="relative mx-auto flex h-full max-w-[1500px] flex-col items-center justify-center px-4 pb-[19vh] pt-24 text-center sm:pb-[21vh]">
+          <div className="relative mx-auto flex h-full max-w-[1500px] flex-col items-center justify-center px-4 pb-[17vh] pt-24 text-center sm:pb-[19vh]">
             <motion.p
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -146,7 +146,6 @@ export function HeroReveal({ people, total, gallery }: { people: FeedItem[]; tot
               className="mb-4 rounded-full bg-highway-mid px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-cream sm:mb-6 sm:text-sm"
             >
               <span aria-hidden>🎉</span> Happy Customer Service Week 2026
-              <span className="hidden sm:inline"> · {CS_WEEK.dates.replace(", 2026", "")}</span>
             </motion.p>
 
             <div className="relative">
@@ -164,7 +163,7 @@ export function HeroReveal({ people, total, gallery }: { people: FeedItem[]; tot
               </h1>
 
               {/* Photo dropped into the headline, cycling through the people being celebrated */}
-              <Parallax x={sx} y={sy} depth={-26} className="absolute left-[68%] -top-[13%] z-10 w-[30%] sm:left-[75%] sm:top-[14%] sm:w-[19%]">
+              <Parallax x={sx} y={sy} depth={-26} className="absolute left-[73%] top-[4%] z-10 w-[26%] sm:left-[75%] sm:top-[14%] sm:w-[19%]">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.6, rotate: -12 }}
                   animate={{ opacity: 1, scale: 1, rotate: -3 }}
@@ -199,16 +198,19 @@ export function HeroReveal({ people, total, gallery }: { people: FeedItem[]; tot
                 </motion.div>
               </Parallax>
 
-            </div>
+              <Parallax x={sx} y={sy} depth={18} className="absolute left-[2%] -top-[5%] z-20 w-[7%] sm:-left-[5%] sm:top-[2%] sm:w-[4.5%]">
+                <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", delay: 1.35 }}>
+                  <PixelSprite name="heart" color="#F6C343" className="bob w-full [animation-delay:-1.2s]" />
+                </motion.div>
+              </Parallax>
 
-            <motion.p
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.75, ease: "easeOut" }}
-              className="mt-6 max-w-xl text-base leading-snug text-glow sm:mt-8 sm:text-xl"
-            >
-              Make a card for someone who makes customers feel looked after.
-            </motion.p>
+              <Parallax x={sx} y={sy} depth={22} className="absolute right-[18%] -bottom-[4%] z-20 hidden w-[4%] sm:block">
+                <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", delay: 1.45 }}>
+                  <PixelSprite name="sparkle" color="#F6EBD3" className="wobble w-full [animation-duration:3s]" />
+                </motion.div>
+              </Parallax>
+
+            </div>
 
             <motion.div
               initial={{ opacity: 0, y: 18 }}
@@ -222,6 +224,12 @@ export function HeroReveal({ people, total, gallery }: { people: FeedItem[]; tot
               </Link>
             </motion.div>
 
+            {/* Static pixel blocks, like the reference's squares by the cursor */}
+            <div aria-hidden className="pointer-events-none absolute bottom-[26%] right-[12%] hidden grid-cols-3 gap-0 opacity-70 lg:grid">
+              {[1, 1, 0, 0, 1, 1, 1, 0, 1].map((on, i) => (
+                <span key={i} className={`h-10 w-10 ${on ? (i % 2 ? "bg-highway-mid" : "bg-highway") : ""}`} />
+              ))}
+            </div>
           </div>
 
           {/* Corner portraits, floating */}
@@ -238,7 +246,7 @@ export function HeroReveal({ people, total, gallery }: { people: FeedItem[]; tot
         >
           <div>
             <p className="font-serif text-xl italic text-ink/70 sm:text-3xl">Messages from the road</p>
-            <h2 className="poster text-[clamp(40px,min(6.2vw,10vh),104px)] leading-[1] text-ink">
+            <h2 className="poster text-[clamp(40px,min(6.6vw,11vh),112px)] leading-[0.92] text-ink">
               They went the <br className="sm:hidden" />
               <span className="text-stop">extra mile</span>
             </h2>
@@ -275,8 +283,8 @@ function PosterLine({ text, delay, mobile = false }: { text: string; delay: numb
   const words = text.split(" ");
   return (
     <span
-      className={`block overflow-hidden leading-[1.02] ${
-        mobile ? "text-[min(17vw,9vh)]" : "text-[clamp(44px,min(11.2vw,13.5vh),176px)]"
+      className={`block overflow-hidden pb-[0.02em] leading-[0.92] ${
+        mobile ? "text-[min(18.5vw,10vh)]" : "text-[clamp(48px,min(12.4vw,14.5vh),190px)]"
       }`}
     >
       <motion.span
@@ -345,8 +353,6 @@ function TicketButton({ href, children }: { href: string; children: React.ReactN
 }
 
 function HeroNav({ total }: { total: number }) {
-  const link =
-    "rounded-full bg-highway-mid px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cream/90 transition hover:bg-highway hover:text-cream";
   return (
     <motion.header
       initial={{ opacity: 0, y: -16 }}
@@ -354,25 +360,62 @@ function HeroNav({ total }: { total: number }) {
       transition={{ duration: 0.6, ease: EXPO }}
       className="absolute inset-x-0 top-0 z-30 mx-auto flex max-w-[1500px] items-center justify-between gap-3 px-4 py-4 sm:px-8 sm:py-6"
     >
-      <Link href="/" className="flex items-center gap-2.5">
+      <nav className="hidden items-center gap-1.5 lg:flex">
+        {[
+          ["How it works", "#how"],
+          ["The wall", "#wall"],
+          ["Celebrate yourself", "/create?mode=self"],
+        ].map(([label, href]) => (
+          <a
+            key={href}
+            href={href}
+            className="last:hidden xl:last:inline-flex rounded-full bg-highway-mid px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cream/90 transition hover:bg-highway hover:text-cream"
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
+      <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-2.5 lg:absolute lg:left-1/2 lg:-translate-x-1/2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/brand/ruut-logo.png" alt="Ruut" className="h-9 w-auto sm:h-10" />
-        <span className="poster whitespace-nowrap text-lg leading-none text-glow sm:text-2xl">
-          Ruut × <span className="hidden sm:inline">Customer Support Hub</span>
-          <span className="sm:hidden">CS Hub</span>
+        <span className="min-w-0 text-left lg:text-center">
+          <span className="poster block whitespace-nowrap text-lg leading-none text-glow sm:text-[26px]">
+            Ruut × <span className="hidden sm:inline">Customer Support Hub</span>
+            <span className="sm:hidden">CS Hub</span>
+          </span>
+          <span className="block whitespace-nowrap text-[9px] font-bold uppercase tracking-[0.2em] text-glow/80 sm:text-[10px]">
+            Presents CS Week 2026
+          </span>
         </span>
       </Link>
-      <div className="flex items-center gap-1.5 sm:gap-2">
-        <a href="#how" className={`${link} hidden md:inline-flex`}>
+      <div className="flex shrink-0 items-center gap-2">
+        <a
+          href="#how"
+          className="hidden rounded-full bg-highway-mid px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cream/90 transition hover:bg-highway hover:text-cream md:inline-flex lg:hidden"
+        >
           How it works
         </a>
-        <a href="#wall" className={`${link} hidden items-center gap-2 md:inline-flex`} aria-label={`The wall, ${total} celebrations`}>
+        <a
+          href="#wall"
+          className="hidden rounded-full bg-highway-mid px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cream/90 transition hover:bg-highway hover:text-cream md:inline-flex lg:hidden"
+        >
           The wall
-          {total > 0 && <span className="rounded-full bg-stop px-1.5 text-[10px] leading-4 text-white">{total > 999 ? "999+" : total}</span>}
+        </a>
+        <a
+          href="#wall"
+          className="relative hidden h-10 w-10 place-items-center rounded-full bg-highway-mid text-cream sm:grid"
+          aria-label={`${total} celebrations on the wall`}
+        >
+          <PixelSprite name="heart" color="#E23B2E" outline="transparent" shadow="transparent" className="h-4 w-4" />
+          {total > 0 && (
+            <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-stop px-1 text-center text-[10px] font-bold leading-5 text-white">
+              {total > 999 ? "999+" : total}
+            </span>
+          )}
         </a>
         <Link
           href="/create"
-          className="poster ml-1 whitespace-nowrap rounded-md bg-cream px-4 py-2.5 text-sm tracking-wide text-ink transition hover:-translate-y-0.5"
+          className="poster whitespace-nowrap rounded-md bg-cream px-4 py-2.5 text-sm tracking-wide text-ink transition hover:-translate-y-0.5"
         >
           Make a card
         </Link>
