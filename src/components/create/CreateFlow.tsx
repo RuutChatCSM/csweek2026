@@ -1,10 +1,12 @@
 "use client";
 
 import confetti from "canvas-confetti";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useEffectEvent, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { CardPreview } from "@/components/card/CardPreview";
-import { BrandLockup, RoadSignMark } from "@/components/site/Brand";
+import { PixelSprite } from "@/components/home/PixelSprite";
+import { BrandLockup } from "@/components/site/Brand";
 import { ShareActions } from "@/components/share/ShareActions";
 import { applyStyle, prepareSquarePhoto } from "@/lib/photo";
 import { THEME_LIST, getTheme, type ThemeId } from "@/lib/themes";
@@ -49,9 +51,9 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
   const [org, setOrg] = useState("");
   const [message, setMessage] = useState("");
   const [senderName, setSenderName] = useState("");
-  const [theme, setTheme] = useState<ThemeId>("signal");
+  const [theme, setTheme] = useState<ThemeId>("ruut");
   const [rawPhoto, setRawPhoto] = useState("");
-  const [photoStyle, setPhotoStyle] = useState<"duotone" | "natural">("duotone");
+  const [photoStyle, setPhotoStyle] = useState<"duotone" | "natural">("natural");
   const [photo, setPhoto] = useState("");
   const [photoError, setPhotoError] = useState("");
   const [sendEnabled, setSendEnabled] = useState(true);
@@ -59,6 +61,7 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
   const [recipientFirstTouched, setRecipientFirstTouched] = useState(false);
   const [recipientEmail, setRecipientEmail] = useState("");
   const [honeypot, setHoneypot] = useState("");
+  const [listed, setListed] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<Result | null>(null);
@@ -105,6 +108,7 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
         body: JSON.stringify({
           ...data,
           website: honeypot,
+          listed,
           send: { enabled: !self && sendEnabled, firstName: effectiveRecipientFirst, email: recipientEmail },
         }),
       });
@@ -185,9 +189,16 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
       <main className="relative z-10 mx-auto grid max-w-7xl gap-10 px-4 pb-24 pt-4 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(340px,480px)] lg:gap-16 lg:pt-10">
         <section className="min-w-0">
           {result ? (
-            <Done result={result} data={data} onRestart={restart} />
+            <Done result={result} data={data} listed={listed} onRestart={restart} />
           ) : (
-            <div key={step} className="pop">
+            <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            >
               {fromEmail && step === 0 && (
                 <p className="mb-6 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm font-bold text-paper">
                   <span aria-hidden>💌</span> Someone celebrated you. Now pass it on.
@@ -250,13 +261,13 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
                   {rawPhoto && (
                     <div className="mt-6 flex flex-wrap items-center gap-3">
                       <span className="text-sm font-bold">Photo style</span>
-                      {(["duotone", "natural"] as const).map((s) => (
+                      {(["natural", "duotone"] as const).map((s) => (
                         <button
                           key={s}
                           type="button"
                           onClick={() => setPhotoStyle(s)}
                           aria-pressed={photoStyle === s}
-                          className={`rounded-full border-2 border-ink px-4 py-1.5 text-sm font-bold transition ${photoStyle === s ? "bg-ink text-paper" : "bg-white hover:bg-signal"}`}
+                          className={`rounded-full border-2 border-ink px-4 py-1.5 text-sm font-bold transition ${photoStyle === s ? "bg-ink text-paper" : "bg-white hover:bg-road"}`}
                         >
                           {s === "duotone" ? "Duotone" : "Original colours"}
                         </button>
@@ -283,7 +294,7 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
                         key={r}
                         type="button"
                         onClick={() => setRole(r)}
-                        className="rounded-full border border-ink/20 bg-white/80 px-3 py-1.5 text-sm font-semibold transition hover:border-ink hover:bg-signal"
+                        className="rounded-full border border-ink/20 bg-white/80 px-3 py-1.5 text-sm font-semibold transition hover:border-ink hover:bg-road"
                       >
                         {r}
                       </button>
@@ -318,7 +329,7 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
                       rows={4}
                       autoFocus
                       placeholder={self ? "This year I…" : "Thank you for…"}
-                      className="w-full resize-none rounded-3xl border-2 border-ink bg-white p-5 font-serif text-2xl italic leading-snug shadow-[5px_5px_0_#16161A] outline-none transition placeholder:text-ink/30 focus:shadow-[5px_5px_0_#FFC629] sm:text-3xl"
+                      className="w-full resize-none rounded-3xl border-2 border-ink bg-white p-5 font-serif text-2xl italic leading-snug shadow-[5px_5px_0_#141414] outline-none transition placeholder:text-ink/30 focus:shadow-[5px_5px_0_#F6C343] sm:text-3xl"
                     />
                   </label>
                   <div className="mt-2 flex justify-end text-sm font-semibold text-ink/50">
@@ -331,7 +342,7 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
                         key={m}
                         type="button"
                         onClick={() => setMessage(m)}
-                        className="rounded-2xl border border-ink/15 bg-white/80 px-4 py-3 text-left font-serif text-lg italic leading-snug transition hover:border-ink hover:bg-signal/60"
+                        className="rounded-2xl border border-ink/15 bg-white/80 px-4 py-3 text-left font-serif text-lg italic leading-snug transition hover:border-ink hover:bg-road/60"
                       >
                         “{m}”
                       </button>
@@ -364,7 +375,7 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
                   </div>
 
                   {!self && (
-                    <div className="mt-8 rounded-3xl border-2 border-ink bg-white p-5 shadow-[5px_5px_0_#16161A] sm:p-6">
+                    <div className="mt-8 rounded-3xl border-2 border-ink bg-white p-5 shadow-[5px_5px_0_#141414] sm:p-6">
                       <label className="flex cursor-pointer items-start gap-3">
                         <input
                           type="checkbox"
@@ -416,6 +427,20 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
                       )}
                     </div>
                   )}
+                  <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-2xl bg-white/70 p-4">
+                    <input
+                      type="checkbox"
+                      checked={listed}
+                      onChange={(e) => setListed(e.target.checked)}
+                      className="mt-1 h-5 w-5 shrink-0 accent-ink"
+                    />
+                    <span>
+                      <span className="block font-bold">Add this celebration to the public wall</span>
+                      <span className="block text-sm text-ink/60">
+                        Name, role, organisation, photo and message appear on the home page. Email addresses are never shown.
+                      </span>
+                    </span>
+                  </label>
                   {/* Honeypot: hidden from people, irresistible to bots */}
                   <input
                     type="text"
@@ -431,7 +456,7 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
               )}
 
               {error && (
-                <p role="alert" className="mt-6 rounded-2xl bg-coral/20 px-4 py-3 font-semibold text-ink">
+                <p role="alert" className="mt-6 rounded-2xl bg-stop/20 px-4 py-3 font-semibold text-ink">
                   {error}
                 </p>
               )}
@@ -457,7 +482,7 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
                     : step === 1 && !rawPhoto
                       ? "Skip, use initials"
                       : "Continue"}
-                  <span className="grid h-8 w-8 place-items-center rounded-full bg-signal text-ink transition-transform group-enabled:group-hover:translate-x-1">
+                  <span className="grid h-8 w-8 place-items-center rounded-full bg-road text-ink transition-transform group-enabled:group-hover:translate-x-1">
                     {step === STEPS.length - 1 ? "🎉" : "→"}
                   </span>
                 </button>
@@ -467,7 +492,8 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
                   </span>
                 )}
               </div>
-            </div>
+            </motion.div>
+            </AnimatePresence>
           )}
         </section>
 
@@ -534,7 +560,7 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
 
 function celebrate() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const colors = ["#FFC629", "#0059FF", "#CADB8A", "#8E55D9", "#FF6B4A"];
+  const colors = ["#F6C343", "#0059FF", "#CADB8A", "#8E55D9", "#FF6B4A"];
   confetti({ particleCount: 140, spread: 90, origin: { y: 0.3 }, colors });
   window.setTimeout(() => confetti({ particleCount: 80, angle: 60, spread: 70, origin: { x: 0 }, colors }), 250);
   window.setTimeout(() => confetti({ particleCount: 80, angle: 120, spread: 70, origin: { x: 1 }, colors }), 400);
@@ -556,7 +582,7 @@ function Progress({ step, onJump }: { step: number; onJump: (i: number) => void 
             disabled={i >= step}
             aria-current={i === step ? "step" : undefined}
             className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold transition ${
-              i === step ? "bg-ink text-paper" : i < step ? "bg-signal text-ink hover:bg-ink hover:text-paper" : "text-ink/40"
+              i === step ? "bg-ink text-paper" : i < step ? "bg-road text-ink hover:bg-ink hover:text-paper" : "text-ink/40"
             }`}
           >
             {i < step ? "✓" : i + 1}
@@ -571,7 +597,7 @@ function Progress({ step, onJump }: { step: number; onJump: (i: number) => void 
 function Step({ title, lede, children }: { title: string; lede: string; children: ReactNode }) {
   return (
     <div>
-      <h1 className="mt-3 max-w-2xl font-display text-5xl font-extrabold leading-[0.95] tracking-tight text-balance sm:text-6xl lg:text-7xl">
+      <h1 className="poster mt-3 max-w-3xl text-balance text-[clamp(44px,6.4vw,96px)] leading-[0.88]">
         {title}
       </h1>
       <p className="mt-4 max-w-xl text-lg leading-relaxed text-ink/65">{lede}</p>
@@ -602,7 +628,7 @@ function BigInput({ id, label, value, onChange, ...rest }: InputProps) {
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 block w-full border-b-4 border-ink bg-transparent py-2 font-display text-4xl font-extrabold tracking-tight outline-none transition placeholder:text-ink/20 focus:border-ruut sm:text-5xl"
+        className="mt-1 block w-full border-b-4 border-ink bg-transparent py-2 font-display text-4xl font-extrabold tracking-tight outline-none transition placeholder:text-ink/20 focus:border-highway sm:text-5xl"
         {...rest}
       />
     </label>
@@ -617,7 +643,7 @@ function SmallInput({ id, label, value, onChange, ...rest }: InputProps) {
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 block w-full rounded-xl border-2 border-ink/80 bg-white px-3.5 py-2.5 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-ink/35 focus:border-ink focus:ring-4 focus:ring-signal/60"
+        className="mt-1.5 block w-full rounded-xl border-2 border-ink/80 bg-white px-3.5 py-2.5 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-ink/35 focus:border-ink focus:ring-4 focus:ring-road/60"
         {...rest}
       />
     </label>
@@ -652,25 +678,25 @@ function PhotoPicker({
           onFile(e.dataTransfer.files[0]);
         }}
         className={`flex flex-col items-center gap-5 rounded-[2rem] border-[3px] border-dashed p-6 text-center transition sm:flex-row sm:text-left ${
-          over ? "border-ruut bg-ruut/5" : "border-ink/40 bg-white/70"
+          over ? "border-highway bg-highway/5" : "border-ink/40 bg-white/70"
         }`}
       >
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={photo} alt="Selected photo" className="h-36 w-36 -rotate-3 rounded-3xl border-[6px] border-white object-cover shadow-lg" />
         ) : (
-          <div className="grid h-36 w-36 shrink-0 place-items-center rounded-3xl bg-signal">
-            <RoadSignMark className="h-20 w-20" arrow />
+          <div className="grid h-36 w-36 shrink-0 place-items-center rounded-3xl bg-road">
+            <PixelSprite name="headset" color="#E23B2E" className="h-20 w-20" />
           </div>
         )}
         <div>
-          <p className="font-display text-2xl font-extrabold tracking-tight">{photo ? "Looking great." : "Drop a photo here"}</p>
+          <p className="poster text-3xl">{photo ? "Looking great." : "Drop a photo here"}</p>
           <p className="mt-1 text-ink/60">JPG or PNG. We’ll crop it to a square.</p>
           <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
             <button
               type="button"
               onClick={() => input.current?.click()}
-              className="rounded-full border-2 border-ink bg-white px-5 py-2.5 font-bold transition hover:bg-signal"
+              className="rounded-full border-2 border-ink bg-white px-5 py-2.5 font-bold transition hover:bg-road"
             >
               {photo ? "Change photo" : "Choose a photo"}
             </button>
@@ -693,7 +719,7 @@ function PhotoPicker({
         />
       </div>
       {error && (
-        <p role="alert" className="mt-3 font-semibold text-coral">
+        <p role="alert" className="mt-3 font-semibold text-stop">
           {error}
         </p>
       )}
@@ -724,7 +750,7 @@ function ThemePicker({
             aria-pressed={value === t.id}
             className={`flex items-center gap-2 rounded-full border-2 py-1 pl-1 text-sm font-bold transition ${
               compact ? "pr-1" : "pr-4"
-            } ${value === t.id ? "border-ink bg-white shadow-[3px_3px_0_#16161A]" : "border-transparent bg-white/70 hover:border-ink/40"}`}
+            } ${value === t.id ? "border-ink bg-white shadow-[3px_3px_0_#141414]" : "border-transparent bg-white/70 hover:border-ink/40"}`}
             title={t.label}
           >
             <span className="h-7 w-7 rounded-full border border-ink/20" style={{ background: `linear-gradient(135deg, ${t.bg} 55%, ${t.panel} 55%)` }} />
@@ -739,10 +765,12 @@ function ThemePicker({
 function Done({
   result,
   data,
+  listed,
   onRestart,
 }: {
   result: Result;
   data: CardData;
+  listed: boolean;
   onRestart: (mode?: CelebrationMode) => void;
 }) {
   // Only ever rendered after a client-side submit, so `window` is available.
@@ -754,7 +782,7 @@ function Done({
   return (
     <div className="pop">
       <p className="text-sm font-bold uppercase tracking-[0.2em] text-ink/50">You went the extra mile</p>
-      <h1 className="mt-3 max-w-2xl font-display text-5xl font-extrabold leading-[0.95] tracking-tight sm:text-7xl">
+      <h1 className="poster mt-3 max-w-3xl text-[clamp(48px,7vw,104px)] leading-[0.88]">
         {self ? "Here’s to you. 🎉" : `${firstNameOf(data.name)}’s card is ready.`}
       </h1>
 
@@ -786,13 +814,23 @@ function Done({
         />
       </div>
 
-      <h2 className="mt-10 font-display text-2xl font-extrabold tracking-tight">Share the celebration</h2>
+      <h2 className="poster mt-10 text-4xl">Share the celebration</h2>
       <p className="mt-1 text-ink/60">
         Post it, send it, drop it in your team channel.{" "}
         {origin && (
-          <Link href={`/c/${result.id}`} className="font-semibold text-ink underline decoration-signal decoration-2 underline-offset-2">
-            View the card page
-          </Link>
+          <>
+            <Link href={`/c/${result.id}`} className="font-semibold text-ink underline decoration-road decoration-2 underline-offset-2">
+              View the card page
+            </Link>
+            {listed && (
+              <>
+                {" · "}
+                <Link href="/#wall" className="font-semibold text-ink underline decoration-road decoration-2 underline-offset-2">
+                  See it on the wall
+                </Link>
+              </>
+            )}
+          </>
         )}
       </p>
       <div className="mt-5 max-w-2xl">
@@ -801,20 +839,20 @@ function Done({
 
       <div className="mt-10 rounded-[2rem] bg-ink p-7 text-paper sm:p-9">
         <p className="font-serif text-2xl italic text-paper/70">Keep the road trip going</p>
-        <p className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">Who else goes the extra mile?</p>
+        <p className="poster mt-1 text-4xl sm:text-5xl">Who else goes the extra mile?</p>
         <div className="mt-6 flex flex-wrap items-center gap-4">
           <button
             type="button"
             onClick={() => onRestart("other")}
-            className="group inline-flex items-center gap-3 rounded-full bg-signal py-3 pl-6 pr-3 text-lg font-bold text-ink transition hover:-translate-y-0.5"
+            className="group inline-flex items-center gap-3 rounded-full bg-road py-3 pl-6 pr-3 text-lg font-bold text-ink transition hover:-translate-y-0.5"
           >
             Celebrate someone else
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-signal transition-transform group-hover:translate-x-1">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-road transition-transform group-hover:translate-x-1">
               →
             </span>
           </button>
           {!self && (
-            <button type="button" onClick={() => onRestart("self")} className="font-serif text-xl italic underline decoration-signal underline-offset-4">
+            <button type="button" onClick={() => onRestart("self")} className="font-serif text-xl italic underline decoration-road underline-offset-4">
               Or celebrate yourself 🎉
             </button>
           )}
@@ -825,6 +863,6 @@ function Done({
 }
 
 function Notice({ tone, children }: { tone: "lime" | "signal" | "coral"; children: ReactNode }) {
-  const bg = { lime: "bg-lime", signal: "bg-signal", coral: "bg-coral/25" }[tone];
+  const bg = { lime: "bg-glow/50", signal: "bg-road", coral: "bg-stop/25" }[tone];
   return <p className={`mt-6 max-w-2xl rounded-2xl ${bg} px-5 py-4 text-base font-semibold`}>{children}</p>;
 }

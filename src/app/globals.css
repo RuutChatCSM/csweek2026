@@ -1,27 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #f6f3ec;
-  --ink: #16161a;
-  --signal: #ffc629;
-  --ruut: #0059ff;
-  --lime: #cadb8a;
-  --violet: #8e55d9;
-  --coral: #ff6b4a;
+  /* Palette from the official CS Week 2026 highway-shield logo */
+  --highway: #1d3f9e;
+  --highway-deep: #0b2a7a;
+  --highway-mid: #143a9c;
+  --glow: #7db4ff;
+  --stop: #e23b2e;
+  --road: #f6c343;
+  --cream: #f6ebd3;
+  --paper: #f4f1e9;
+  --ink: #141414;
   color-scheme: light;
 }
 
 @theme inline {
+  --color-highway: var(--highway);
+  --color-highway-deep: var(--highway-deep);
+  --color-highway-mid: var(--highway-mid);
+  --color-glow: var(--glow);
+  --color-stop: var(--stop);
+  --color-road: var(--road);
+  --color-cream: var(--cream);
   --color-paper: var(--paper);
   --color-ink: var(--ink);
-  --color-signal: var(--signal);
-  --color-ruut: var(--ruut);
-  --color-lime: var(--lime);
-  --color-violet: var(--violet);
-  --color-coral: var(--coral);
+  --font-poster: var(--font-poster);
   --font-display: var(--font-display);
   --font-serif: var(--font-serif);
   --font-sans: var(--font-body);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
@@ -35,14 +43,20 @@ body {
 }
 
 ::selection {
-  background: var(--signal);
+  background: var(--road);
   color: var(--ink);
 }
 
-/* Dot grid used behind the hero and the builder */
+.poster {
+  font-family: var(--font-poster), "Arial Narrow", Arial, sans-serif;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+/* Luma-style paper with a fine dot grid */
 .dot-grid {
-  background-image: radial-gradient(rgba(22, 22, 26, 0.16) 1.2px, transparent 1.3px);
-  background-size: 22px 22px;
+  background-image: radial-gradient(rgba(20, 20, 20, 0.14) 1px, transparent 1.2px);
+  background-size: 18px 18px;
 }
 
 /* The "road" dashed line motif */
@@ -50,7 +64,6 @@ body {
   background-image: linear-gradient(90deg, currentColor 0 55%, transparent 55% 100%);
   background-size: 34px 100%;
 }
-
 @keyframes drive {
   to {
     background-position: -340px 0;
@@ -60,40 +73,81 @@ body {
   animation: drive 6s linear infinite;
 }
 
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(28px) rotate(var(--r, 0deg));
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) rotate(var(--r, 0deg));
-  }
-}
-.rise {
-  animation: rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
 @keyframes marquee {
   to {
     transform: translateX(-50%);
   }
 }
 .marquee {
-  animation: marquee 38s linear infinite;
+  animation: marquee 34s linear infinite;
+}
+.marquee-reverse {
+  animation: marquee 40s linear infinite reverse;
+}
+
+@keyframes float-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translate3d(8px, -14px, 0) rotate(calc(var(--r, 0deg) + 1.2deg));
+  }
+}
+@keyframes float-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translate3d(-10px, 10px, 0) rotate(calc(var(--r, 0deg) - 1deg));
+  }
+}
+.float-a {
+  animation: float-a var(--d, 7s) ease-in-out infinite;
+}
+.float-b {
+  animation: float-b var(--d, 8s) ease-in-out infinite;
 }
 
 @keyframes wobble {
   0%,
   100% {
-    transform: rotate(-8deg);
+    transform: rotate(-9deg);
   }
   50% {
-    transform: rotate(8deg);
+    transform: rotate(9deg);
   }
 }
 .wobble {
-  animation: wobble 5s ease-in-out infinite;
+  animation: wobble 4.5s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+.bob {
+  animation: bob 3.6s ease-in-out infinite;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise {
+  animation: rise 0.8s var(--ease-expo) both;
 }
 
 @keyframes pop {
@@ -108,14 +162,39 @@ body {
   }
 }
 .pop {
-  animation: pop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: pop 0.45s var(--ease-expo);
+}
+
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(226, 59, 46, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(226, 59, 46, 0);
+  }
+}
+.live-dot {
+  animation: pulse-dot 1.4s ease-out infinite;
+}
+
+/* Ticket-style CTA with a perforated divider (after MoMoney) */
+.ticket-divider {
+  background-image: linear-gradient(to bottom, currentColor 50%, transparent 50%);
+  background-size: 2px 8px;
+  background-repeat: repeat-y;
+  background-position: center;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .rise,
   .marquee,
+  .marquee-reverse,
   .wobble,
+  .bob,
   .pop,
+  .float-a,
+  .float-b,
+  .live-dot,
   .road-dashes.moving {
     animation: none !important;
   }

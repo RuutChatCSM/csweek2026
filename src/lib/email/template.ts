@@ -42,8 +42,11 @@ export function celebrationEmail({
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F1EA;">
   <tr><td align="center" style="padding:32px 16px;">
     <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;font-family:Figtree,'Helvetica Neue',Arial,sans-serif;color:#16161A;">
-      <tr><td style="padding:0 8px 20px;font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">
-        Customer Service Week ${CS_WEEK.year} &nbsp;·&nbsp; ${CS_WEEK.theme}
+      <tr><td style="padding:0 8px 20px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+          <td style="font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">Customer Service Week ${CS_WEEK.year}<br><span style="color:rgba(20,20,20,.55)">${CS_WEEK.theme} · ${CS_WEEK.dates}</span></td>
+          <td align="right"><a href="${CS_WEEK.site}"><img src="${siteUrl}${CS_WEEK.logo}" width="64" alt="Customer Service Week 2026" style="display:block;width:64px;height:auto;border:0;"></a></td>
+        </tr></table>
       </td></tr>
       <tr><td style="background:${theme.bg};border-radius:28px;padding:40px 36px 36px;color:${theme.ink};">
         <p style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:22px;opacity:.8;">Hey ${first},</p>
@@ -83,12 +86,12 @@ export function celebrationEmail({
           <tr><td style="padding:30px 32px;color:#FFFFFF;">
             <p style="margin:0 0 6px;font-size:22px;font-weight:800;line-height:1.2;">Someone celebrated you.</p>
             <p style="margin:0 0 20px;font-size:16px;line-height:1.5;color:rgba(255,255,255,.75);">Now celebrate someone who makes customer experiences better.</p>
-            <a href="${celebrateUrl}" style="display:inline-block;padding:14px 24px;border-radius:999px;background:#FFC629;color:#16161A;font-size:15px;font-weight:800;text-decoration:none;">Celebrate someone →</a>
+            <a href="${celebrateUrl}" style="display:inline-block;padding:14px 24px;border-radius:999px;background:#F6C343;color:#141414;font-size:15px;font-weight:800;text-decoration:none;">Celebrate someone →</a>
           </td></tr>
         </table>
       </td></tr>
       <tr><td style="padding:24px 8px;font-size:12px;line-height:1.6;color:rgba(22,22,26,.6);">
-        A <strong>Ruut × Customer Support Hub</strong> celebration of the people behind great customer experiences.<br>
+        A <strong>Ruut × Customer Support Hub</strong> celebration of the people behind great customer experiences. Customer Service Week theme and logo from <a href="${CS_WEEK.site}" style="color:inherit;">CSWeek.com</a>.<br>
         Delivered with <strong>Convert by Ruut</strong>. You received this because ${from ? esc(from) : "someone"} entered your email to send you this card. We won't email you again.
       </td></tr>
     </table>

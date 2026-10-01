@@ -11,7 +11,7 @@ export default async function OutboxPage({ params }: PageProps<"/dev/outbox/[id]
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
-      <div className="mb-4 rounded-2xl bg-signal px-5 py-4 text-sm">
+      <div className="mb-4 rounded-2xl bg-road px-5 py-4 text-sm">
         <p className="font-bold">Dev outbox · this email was not sent</p>
         <p className="mt-1">
           Set <code>CONVERT_API_URL</code> and <code>CONVERT_API_KEY</code> to deliver through Convert by Ruut.

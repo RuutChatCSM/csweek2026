@@ -22,7 +22,7 @@ function shareText({ name, role, org, self }: Props) {
 }
 
 const btn =
-  "inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink px-4 py-3 text-sm font-bold transition hover:-translate-y-0.5 hover:shadow-[3px_3px_0_#16161A] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-signal";
+  "inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink px-4 py-3 text-sm font-bold transition hover:-translate-y-0.5 hover:shadow-[3px_3px_0_#141414] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-road";
 
 export function ShareActions(props: Props) {
   const { id, url } = props;
@@ -128,7 +128,7 @@ export function ShareActions(props: Props) {
           </svg>
           Instagram
         </button>
-        <button type="button" onClick={copyLink} className={`${btn} bg-signal`}>
+        <button type="button" onClick={copyLink} className={`${btn} bg-road`}>
           <span aria-hidden>🔗</span> Copy link
         </button>
       </div>

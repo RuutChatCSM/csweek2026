@@ -8,6 +8,8 @@
  * Satori only supports a subset of CSS, so keep to: inline styles, flexbox,
  * absolute positioning, transforms, borders, gradients. Every element with more
  * than one child must be `display: flex`.
+ *
+ * Every card carries the official, unaltered CS Week 2026 logo (see csweek.com logo terms).
  */
 import type { CSSProperties } from "react";
 import { getTheme, type Theme } from "@/lib/themes";
@@ -16,10 +18,14 @@ import { CS_WEEK, type CardData } from "@/lib/types";
 export const CARD_W = 1080;
 export const CARD_H = 1350;
 
-export type CardFonts = { display: string; serif: string; body: string };
+/** Official logo aspect ratio (300×328) */
+export const LOGO_RATIO = 328 / 300;
+
+export type CardFonts = { poster: string; display: string; serif: string; body: string };
 
 /** Font family names registered with Satori (see lib/og-fonts.ts) */
 export const OG_FONTS: CardFonts = {
+  poster: "Anton",
   display: "Bricolage",
   serif: "Instrument Serif",
   body: "Figtree",
@@ -27,6 +33,7 @@ export const OG_FONTS: CardFonts = {
 
 /** Font families exposed by next/font in the app layout */
 export const DOM_FONTS: CardFonts = {
+  poster: "var(--font-poster)",
   display: "var(--font-display)",
   serif: "var(--font-serif)",
   body: "var(--font-body)",
@@ -40,32 +47,34 @@ export function initials(name: string) {
   return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
 }
 
-function nameSize(name: string, columnWidth: number, max: number) {
-  const longestWord = Math.max(4, ...name.split(/\s+/).map((w) => w.length));
-  // Bricolage 800 averages ~0.6em per glyph
-  const byWord = Math.floor(columnWidth / (longestWord * 0.6));
-  const byTotal = name.length > 22 ? max * 0.72 : name.length > 14 ? max * 0.86 : max;
-  return Math.max(52, Math.min(max, byWord, byTotal));
+function posterSize(text: string, width: number, max: number, min = 56) {
+  const longestWord = Math.max(3, ...text.split(/\s+/).map((w) => w.length));
+  // Anton uppercase averages ~0.5em per glyph
+  return Math.max(min, Math.min(max, Math.floor(width / (longestWord * 0.5))));
 }
 
 function messageSize(message: string) {
   const n = message.length;
-  if (n <= 70) return 66;
-  if (n <= 120) return 56;
-  if (n <= 170) return 50;
-  return 44;
+  if (n <= 70) return 64;
+  if (n <= 120) return 54;
+  if (n <= 170) return 48;
+  return 42;
 }
 
 export function Photo({
   data,
   theme,
-  size,
+  width,
+  height,
   fonts,
+  radius = 26,
 }: {
   data: CardData;
   theme: Theme;
-  size: number;
+  width: number;
+  height: number;
   fonts: CardFonts;
+  radius?: number;
 }) {
   if (data.photo) {
     return (
@@ -73,85 +82,27 @@ export function Photo({
       <img
         src={data.photo}
         alt=""
-        width={size}
-        height={size}
-        style={{ width: size, height: size, objectFit: "cover", borderRadius: 30 }}
+        width={width}
+        height={height}
+        style={{ width, height, objectFit: "cover", borderRadius: radius }}
       />
     );
   }
   return (
     <div
       style={flex({
-        width: size,
-        height: size,
-        borderRadius: 30,
+        width,
+        height,
+        borderRadius: radius,
         alignItems: "center",
         justifyContent: "center",
         backgroundImage: `linear-gradient(140deg, ${theme.duo[0]}, ${theme.duo[1]})`,
         color: "#FFFFFF",
-        fontFamily: fonts.display,
-        fontWeight: 800,
-        fontSize: size * 0.38,
-        letterSpacing: -6,
+        fontFamily: fonts.poster,
+        fontSize: Math.min(width, height) * 0.42,
       })}
     >
       {initials(data.name)}
-    </div>
-  );
-}
-
-/** "The Extra Mile" road sign. `size` is the side of the (rotated) square. */
-export function RoadSign({ theme, size, fonts }: { theme: Theme; size: number; fonts: CardFonts }) {
-  const box = Math.round(size * 1.42);
-  const offset = Math.round((box - size) / 2);
-  return (
-    <div style={flex({ position: "relative", width: box, height: box })}>
-      <div
-        style={flex({
-          position: "absolute",
-          left: offset,
-          top: offset,
-          width: size,
-          height: size,
-          backgroundColor: theme.sign,
-          borderRadius: size * 0.14,
-          transform: "rotate(45deg)",
-          boxShadow: "0 18px 40px rgba(0,0,0,0.28)",
-          alignItems: "center",
-          justifyContent: "center",
-        })}
-      >
-        <div
-          style={{
-            display: "flex",
-            width: size - size * 0.12,
-            height: size - size * 0.12,
-            borderRadius: size * 0.1,
-            border: `${Math.max(3, Math.round(size * 0.025))}px solid ${theme.signInk}`,
-          }}
-        />
-      </div>
-      <div
-        style={flex({
-          position: "absolute",
-          left: 0,
-          top: 0,
-          width: box,
-          height: box,
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          color: theme.signInk,
-          fontFamily: fonts.display,
-          fontWeight: 800,
-          lineHeight: 0.92,
-          textTransform: "uppercase",
-        })}
-      >
-        <div style={{ display: "flex", fontSize: size * 0.13, letterSpacing: size * 0.012 }}>The</div>
-        <div style={{ display: "flex", fontSize: size * 0.26, letterSpacing: -1 }}>Extra</div>
-        <div style={{ display: "flex", fontSize: size * 0.26, letterSpacing: -1 }}>Mile</div>
-      </div>
     </div>
   );
 }
@@ -167,23 +118,32 @@ function RoadDashes({ color, width, count = 16 }: { color: string; width: number
   );
 }
 
-export function CardArt({ data, fonts = OG_FONTS }: { data: CardData; fonts?: CardFonts }) {
+export function CardArt({
+  data,
+  fonts = OG_FONTS,
+  logoSrc = CS_WEEK.logo,
+}: {
+  data: CardData;
+  fonts?: CardFonts;
+  logoSrc?: string;
+}) {
   const theme = getTheme(data.theme);
   const self = data.mode === "self";
   const pad = 64;
   const inner = CARD_W - pad * 2;
-  const photoSize = 452;
-  const columnWidth = inner - photoSize - 56;
+  const photoW = 432;
+  const photoH = 468;
+  const columnWidth = inner - photoW - 52;
+  const logoW = 196;
+  const logoH = Math.round(logoW * LOGO_RATIO);
 
   const name = data.name.trim() || (self ? "Your name" : "Their name");
-  const role = data.role.trim() || "Role";
+  const role = data.role.trim() || "Role / job title";
   const org = data.org.trim() || "Organisation";
   const message =
     data.message.trim() ||
-    (self
-      ? "Something you're proud of this year…"
-      : "Your message of thanks will appear here…");
-  const placeholder = (filled: string) => (filled.trim() ? 1 : 0.38);
+    (self ? "Something you're proud of this year…" : "Your message of thanks will appear here…");
+  const placeholder = (filled: string) => (filled.trim() ? 1 : 0.4);
 
   const signoff = self
     ? "Celebrating myself"
@@ -205,94 +165,73 @@ export function CardArt({ data, fonts = OG_FONTS }: { data: CardData; fonts?: Ca
         overflow: "hidden",
       })}
     >
-      {/* Top bar */}
-      <div style={flex({ justifyContent: "space-between", alignItems: "center", height: 56 })}>
-        <div
-          style={flex({
-            alignItems: "center",
-            gap: 14,
-            fontSize: 25,
-            fontWeight: 700,
-            letterSpacing: 2.5,
-            textTransform: "uppercase",
-          })}
-        >
-          <div style={{ display: "flex", width: 16, height: 16, borderRadius: 8, backgroundColor: theme.accent }} />
-          Customer Service Week {CS_WEEK.year}
-        </div>
-        <div
-          style={flex({
-            alignItems: "center",
-            height: 52,
-            padding: "0 22px",
-            borderRadius: 26,
-            border: `3px solid ${theme.ink}`,
-            fontSize: 23,
-            fontWeight: 700,
-            letterSpacing: 1.5,
-            textTransform: "uppercase",
-          })}
-        >
-          Oct 5–9
-        </div>
-      </div>
-
-      {/* Photo + name */}
-      <div style={flex({ marginTop: 44, height: 520, gap: 56 })}>
-        <div style={flex({ position: "relative", width: photoSize, height: photoSize + 20 })}>
+      {/* Header: kicker + official logo */}
+      <div style={flex({ justifyContent: "space-between", alignItems: "flex-start", height: 226 })}>
+        <div style={flex({ flexDirection: "column", paddingTop: 8 })}>
           <div
             style={flex({
-              padding: 12,
-              borderRadius: 42,
-              backgroundColor: "#FFFFFF",
-              transform: "rotate(-3deg)",
-              boxShadow: "0 24px 50px rgba(0,0,0,0.22)",
+              fontFamily: fonts.poster,
+              fontSize: 138,
+              lineHeight: 0.9,
+              textTransform: "uppercase",
+              color: theme.accent,
             })}
           >
-            <Photo data={data} theme={theme} size={photoSize - 24} fonts={fonts} />
+            Celebrating
           </div>
-          <div style={flex({ position: "absolute", left: -50, bottom: -104 })}>
-            <RoadSign theme={theme} size={176} fonts={fonts} />
-          </div>
-        </div>
-
-        <div style={flex({ flexDirection: "column", width: columnWidth, paddingTop: 6 })}>
           <div
             style={flex({
-              fontFamily: fonts.serif,
-              fontStyle: "italic",
-              fontSize: 58,
-              lineHeight: 1,
+              marginTop: 20,
+              fontSize: 25,
+              fontWeight: 700,
+              letterSpacing: 3,
+              textTransform: "uppercase",
               color: theme.muted,
             })}
           >
-            {self ? "Proudly celebrating" : "Celebrating"}
+            {self ? "Me · " : ""}Customer Service Week · {CS_WEEK.dates}
           </div>
+        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={logoSrc}
+          alt="Customer Service Week 2026 — The Extra Mile"
+          width={logoW}
+          height={logoH}
+          style={{ width: logoW, height: logoH }}
+        />
+      </div>
+
+      {/* Photo + name */}
+      <div style={flex({ marginTop: 26, height: 492, gap: 52 })}>
+        <div
+          style={flex({
+            padding: 12,
+            borderRadius: 38,
+            backgroundColor: "#FFFFFF",
+            transform: "rotate(-2.5deg)",
+            boxShadow: "0 26px 50px rgba(0,0,0,0.28)",
+            alignSelf: "flex-start",
+          })}
+        >
+          <Photo data={data} theme={theme} width={photoW - 24} height={photoH - 24} fonts={fonts} />
+        </div>
+
+        <div style={flex({ flexDirection: "column", width: columnWidth, justifyContent: "flex-end", paddingBottom: 30 })}>
           <div
             style={flex({
-              marginTop: 14,
-              fontFamily: fonts.display,
-              fontWeight: 800,
-              fontSize: nameSize(name, columnWidth, 108),
-              lineHeight: 0.94,
-              letterSpacing: -3,
+              fontFamily: fonts.poster,
+              fontSize: posterSize(name, columnWidth, 132),
+              lineHeight: 0.92,
+              textTransform: "uppercase",
               opacity: placeholder(data.name),
               flexWrap: "wrap",
             })}
           >
             {name}
           </div>
-          <div style={flex({ marginTop: 28, flexDirection: "column", gap: 6 })}>
-            <div
-              style={flex({
-                fontSize: 32,
-                fontWeight: 700,
-                lineHeight: 1.15,
-                opacity: placeholder(data.role),
-              })}
-            >
-              {role}
-            </div>
+          <div style={flex({ marginTop: 24, flexDirection: "column", gap: 6 })}>
+            <div style={flex({ fontSize: 33, fontWeight: 700, lineHeight: 1.15, opacity: placeholder(data.role) })}>{role}</div>
             <div
               style={flex({
                 fontSize: 30,
@@ -311,27 +250,16 @@ export function CardArt({ data, fonts = OG_FONTS }: { data: CardData; fonts?: Ca
       {/* Message */}
       <div
         style={flex({
-          marginTop: 56,
+          marginTop: 40,
           flexGrow: 1,
-          borderRadius: 40,
+          borderRadius: 36,
           backgroundColor: theme.panel,
           color: theme.panelInk,
-          padding: "34px 52px 44px",
+          padding: "30px 50px 40px",
           flexDirection: "column",
         })}
       >
-        <div
-          style={flex({
-            fontFamily: fonts.display,
-            fontWeight: 800,
-            fontSize: 140,
-            lineHeight: 1,
-            height: 76,
-            color: theme.quote,
-          })}
-        >
-          “
-        </div>
+        <div style={flex({ fontFamily: fonts.poster, fontSize: 130, lineHeight: 1, height: 70, color: theme.quote })}>“</div>
         <div
           style={flex({
             flexGrow: 1,
@@ -348,8 +276,8 @@ export function CardArt({ data, fonts = OG_FONTS }: { data: CardData; fonts?: Ca
       </div>
 
       {/* Footer */}
-      <div style={flex({ marginTop: 34, flexDirection: "column", gap: 26 })}>
-        <RoadDashes color={theme.ink} width={inner} count={22} />
+      <div style={flex({ marginTop: 30, flexDirection: "column", gap: 24 })}>
+        <RoadDashes color={theme.accent} width={inner} count={22} />
         <div style={flex({ justifyContent: "space-between", alignItems: "center", fontSize: 26 })}>
           <div style={flex({ fontWeight: 700 })}>{signoff}</div>
           <div style={flex({ alignItems: "center", gap: 10, fontWeight: 600, color: theme.muted })}>

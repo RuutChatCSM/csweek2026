@@ -9,7 +9,7 @@ export type CardData = {
   role: string;
   org: string;
   message: string;
-  /** Processed (cropped, optionally duotoned) JPEG data URL, or empty for an initials avatar */
+  /** Processed (cropped, optionally duotoned) JPEG data URL or image URL; empty for an initials avatar */
   photo: string;
   theme: ThemeId;
   senderName: string;
@@ -20,10 +20,37 @@ export type EmailStatus = "not_requested" | "sent" | "queued_dev" | "failed";
 export type StoredCard = CardData & {
   id: string;
   createdAt: string;
+  /** Shown on the public Wall of Celebrations (creator opted in) */
+  listed?: boolean;
+  /** Removed by a moderator */
+  hidden?: boolean;
   email: {
     status: EmailStatus;
     recipientFirstName?: string;
   };
+};
+
+/** Lightweight public shape used by the hero, the reveal fan and the wall. */
+export type FeedItem = {
+  id: string;
+  name: string;
+  role: string;
+  org: string;
+  message: string;
+  senderName: string;
+  mode: CelebrationMode;
+  theme: ThemeId;
+  photoUrl: string | null;
+  createdAt: string;
+  /** Sample celebration shown while the wall is still filling up */
+  example?: boolean;
+};
+
+export type FeedPage = {
+  items: FeedItem[];
+  page: number;
+  pages: number;
+  total: number;
 };
 
 export const LIMITS = {
@@ -40,4 +67,8 @@ export const CS_WEEK = {
   theme: "The Extra Mile",
   dates: "Oct 5–9, 2026",
   hashtag: "#CSWeek2026",
+  logo: "/brand/csweek-2026-logo.png",
+  site: "https://csweek.com",
 } as const;
+
+export const WALL_PAGE_SIZE = 12;

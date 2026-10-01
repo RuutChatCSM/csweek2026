@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { CARD_H, CARD_W, CardArt } from "@/components/card/CardArt";
 import { STORY_H, STORY_W, StoryArt } from "@/components/card/Formats";
-import { loadOgFonts } from "@/lib/og-fonts";
+import { loadLogoDataUrl, loadOgFonts } from "@/lib/og-fonts";
 import { siteUrl } from "@/lib/site";
 import { getCard } from "@/lib/store";
 
@@ -22,7 +22,8 @@ export async function GET(req: Request, ctx: RouteContext<"/api/cards/[id]/image
   const host = new URL(await siteUrl()).host;
 
   const fonts = await loadOgFonts();
-  let element = <CardArt data={card} />;
+  const logoSrc = await loadLogoDataUrl();
+  let element = <CardArt data={card} logoSrc={logoSrc} />;
   if (story) {
     const png = await new ImageResponse(element, { width: CARD_W, height: CARD_H, fonts }).arrayBuffer();
     const cardPng = `data:image/png;base64,${Buffer.from(png).toString("base64")}`;

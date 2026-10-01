@@ -3,19 +3,35 @@
 An interactive Customer Service Week 2026 experience: **come in, celebrate a customer support professional, make them a personalised card, share it instantly.**
 Built around the official 2026 theme, **The Extra Mile** (Oct 5–9, 2026), with a road-sign and mile-marker visual language.
 
-## The flow
+## The experience
+
+**Home (`/`)** is one scroll-driven story:
+
+1. **Poster hero** (after the MoMoney reference): a highway-blue colour field with huge condensed *Celebrating the people who go the extra mile* type. Letters rise in one by one. A photo dropped into the headline cycles through the people being celebrated. Stickers include the official CS Week logo and pixel-art headset and heart, all with mouse parallax. A pixel trail follows the cursor, and corner portraits float.
+2. **Fan → reveal** (after Luma's Art of Hosting): the fan of portraits peeking at the bottom of the hero rises into a row as you scroll. The background turns to paper, and each card flips as it reaches the centre to reveal the message someone wrote.
+3. **Thank-you marquees**, then **the Wall**: every shared celebration, newest first. It is paginated (`?page=`) and polls every 8s, so new cards spring in while you watch.
+4. How it works, the Ruut / Convert by Ruut story, and the footer.
+
+**The page gets better as people use it.** The hero photo, the corner portraits, the "Just celebrated" chip, the reveal fan and the wall all draw on real celebrations first. Until there are enough, they're topped up with clearly tagged examples (`src/lib/examples.ts`, fictional people and organisations, Unsplash portraits).
+
+Motion: `motion` (Framer Motion) for the intro, scroll choreography and layout animation, Lenis for smooth scrolling, and a canvas for the pixel trail. Everything respects `prefers-reduced-motion`.
 
 | Route | What it is |
 | --- | --- |
-| `/` | Event-style hero. "Happy Customer Service Week 2026", a huge *The Extra Mile* centrepiece, the primary CTA and **Or celebrate yourself 🎉** |
-| `/create` | 5-step builder (Who → Photo → About → Message → Send) with a live card preview. `?mode=self` switches the copy to self-celebration |
-| `/c/[id]` | Public card page with share/download, OG tags for link previews, and the viral loop CTA. `?via=email` greets the recipient |
-| `/api/cards` | `POST`: validates, stores the card, optionally emails the recipient through Convert |
-| `/api/cards/[id]/image` | Card PNG, 1080×1350 (4:5). `?format=story` gives 1080×1920, `?download=1` downloads it |
-| `/api/cards/[id]/og` | 1200×630 link-preview image (LinkedIn, X, WhatsApp, Slack) |
-| `/dev/outbox/[id]` | Dev only: preview of the email that *would* have been sent |
+| `/create` | 5-step builder with a live preview. `?mode=self` gives the self-celebration copy |
+| `/c/[id]` | Public card page with share/download and the viral loop. `?via=email` greets the recipient |
+| `GET /api/cards?page=N` | Public wall feed (12 per page) |
+| `POST /api/cards` | Validates, stores, optionally adds to the wall, optionally emails through Convert |
+| `DELETE /api/cards/[id]` | Moderation: hides a card (header `x-admin-token: $ADMIN_TOKEN`) |
+| `/api/cards/[id]/image` | Card PNG 1080×1350. `?format=story` gives 1080×1920, `?download=1` downloads it |
+| `/api/cards/[id]/og` | 1200×630 link preview |
+| `/api/cards/[id]/photo` | The card's photo (keeps the feed light) |
+| `/dev/outbox/[id]` | Dev only: preview of the email that would have been sent |
 
-The viral loop is **Create → Send → Receive → Celebrate someone else → Repeat**. The email and the card page both end with *"Someone celebrated you. Now celebrate someone who makes customer experiences better."*
+## Official CS Week logo
+
+Every card, the Story image, the OG image and the email carry the official **Customer Service Week 2026 "The Extra Mile"** logo (`public/brand/csweek-2026-logo.png`, from csweek.com).
+The logo terms allow use on websites, social media and emails for your celebration. They require the logo to stay **unaltered** (no stretching, recolouring or reshaping) and ask that you link to CSWeek.com. The site does both.
 
 ## How the card is made
 
@@ -51,4 +67,6 @@ npm run dev
 - Confirm Convert's API shape and a verified sender domain.
 - Rate limiting is in-memory per instance (30 cards and 8 emails per IP per hour, plus a honeypot). Use a shared limiter for multi-instance deployments.
 - Swap the text wordmarks in `src/components/site/Brand.tsx` for official Ruut / Customer Support Hub logo files.
-- Card pages are `noindex` and unlisted (random IDs), and the recipient's email address is never stored.
+- Card pages are `noindex` with random IDs, and the recipient's email address is never stored. Showing a card on the public wall is opt-in (default on) in the last step.
+- Set `ADMIN_TOKEN` so you can hide anything inappropriate from the wall. Consider pre-moderation if the wall will be shown on a big screen.
+- Portraits in `public/people` are from Unsplash (see `CREDITS.md`).

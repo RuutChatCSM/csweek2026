@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sendWithConvert } from "@/lib/email/convert";
 import { celebrationEmail } from "@/lib/email/template";
+import { getFeedPage } from "@/lib/feed";
 import { clientIp, rateLimit, siteUrl } from "@/lib/site";
 import { newCardId, saveCard } from "@/lib/store";
 import { THEMES } from "@/lib/themes";
@@ -11,6 +12,12 @@ export const runtime = "nodejs";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHOTO_RE = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
 
+/** Public wall feed: `GET /api/cards?page=1` */
+export async function GET(req: Request) {
+  const page = Number(new URL(req.url).searchParams.get("page") ?? "1");
+  return NextResponse.json(await getFeedPage(page), { headers: { "Cache-Control": "no-store" } });
+}
+
 type Body = {
   mode?: unknown;
   name?: unknown;
@@ -20,6 +27,7 @@ type Body = {
   photo?: unknown;
   theme?: unknown;
   senderName?: unknown;
+  listed?: unknown;
   send?: { enabled?: unknown; firstName?: unknown; email?: unknown };
   website?: unknown; // honeypot
 };
@@ -50,7 +58,7 @@ export async function POST(req: Request) {
   const org = str(body.org, LIMITS.org);
   const message = typeof body.message === "string" ? body.message.trim().slice(0, LIMITS.message) : "";
   const senderName = mode === "self" ? "" : str(body.senderName, LIMITS.senderName);
-  const theme = typeof body.theme === "string" && body.theme in THEMES ? (body.theme as StoredCard["theme"]) : "signal";
+  const theme = typeof body.theme === "string" && body.theme in THEMES ? (body.theme as StoredCard["theme"]) : "ruut";
   const photo = typeof body.photo === "string" ? body.photo : "";
 
   if (!name || !role || !org || !message) {
@@ -78,6 +86,7 @@ export async function POST(req: Request) {
     photo,
     theme,
     senderName,
+    listed: body.listed !== false,
     email: { status: "not_requested" },
   };
 
@@ -88,7 +97,7 @@ export async function POST(req: Request) {
       const base = await siteUrl();
       const { subject, html, text } = celebrationEmail({ card, recipientFirstName, siteUrl: base });
       // Save first so the image URL inside the email resolves as soon as it's opened.
-      await saveCard({ ...card, email: { status: "not_requested" } });
+      await saveCard(card);
       const result = await sendWithConvert({
         id: card.id,
         to: { email: recipientEmail, name: recipientFirstName },
@@ -100,6 +109,6 @@ export async function POST(req: Request) {
     }
   }
 
-  await saveCard(card);
+  await saveCard(card, { index: true });
   return NextResponse.json({ id: card.id, email: card.email });
 }

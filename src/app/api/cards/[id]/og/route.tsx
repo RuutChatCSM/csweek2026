@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { OG_H, OG_W, OgArt } from "@/components/card/Formats";
-import { loadOgFonts } from "@/lib/og-fonts";
+import { loadLogoDataUrl, loadOgFonts } from "@/lib/og-fonts";
 import { getCard } from "@/lib/store";
 
 export const runtime = "nodejs";
@@ -11,7 +11,7 @@ export async function GET(_req: Request, ctx: RouteContext<"/api/cards/[id]/og">
   const card = await getCard(id);
   if (!card) return new Response("Not found", { status: 404 });
 
-  return new ImageResponse(<OgArt data={card} />, {
+  return new ImageResponse(<OgArt data={card} logoSrc={await loadLogoDataUrl()} />, {
     width: OG_W,
     height: OG_H,
     fonts: await loadOgFonts(),

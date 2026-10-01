@@ -54,7 +54,7 @@ export default async function CardPage({ params, searchParams }: PageProps<"/c/[
 
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-ink/50">Customer Service Week 2026</p>
-            <h1 className="mt-3 font-display text-5xl font-extrabold leading-[0.95] tracking-tight sm:text-7xl">
+            <h1 className="poster mt-3 text-[clamp(52px,7vw,110px)] leading-[0.88]">
               {fromEmail
                 ? `${first}, this one’s for you.`
                 : self
@@ -65,23 +65,23 @@ export default async function CardPage({ params, searchParams }: PageProps<"/c/[
             {card.senderName && !self && <p className="mt-3 font-bold">— {card.senderName}</p>}
 
             <div className="mt-10 max-w-2xl">
-              <h2 className="mb-4 font-display text-2xl font-extrabold tracking-tight">
+              <h2 className="poster mb-4 text-4xl">
                 {fromEmail ? "Show it off" : "Share the celebration"}
               </h2>
               <ShareActions id={id} name={card.name} role={card.role} org={card.org} self={self} url={url} />
             </div>
 
             <div className="mt-10 max-w-2xl rounded-[2rem] bg-ink p-7 text-paper sm:p-9">
-              <p className="font-display text-3xl font-extrabold leading-tight tracking-tight">
+              <p className="poster text-4xl leading-none sm:text-5xl">
                 {fromEmail || !self ? "Someone celebrated you." : "Your turn."}
               </p>
               <p className="mt-2 text-lg text-paper/75">Now celebrate someone who makes customer experiences better.</p>
               <Link
                 href={fromEmail ? `/create?ref=email&from=${id}` : "/create"}
-                className="group mt-6 inline-flex items-center gap-3 rounded-full bg-signal py-3 pl-6 pr-3 text-lg font-bold text-ink transition hover:-translate-y-0.5"
+                className="poster group mt-6 inline-flex items-center gap-3 rounded-md bg-road py-3 pl-6 pr-3 text-xl tracking-wide text-ink transition hover:-translate-y-0.5"
               >
                 Celebrate someone
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-signal transition-transform group-hover:translate-x-1">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-road transition-transform group-hover:translate-x-1">
                   →
                 </span>
               </Link>
