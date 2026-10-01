@@ -12,7 +12,7 @@ Built around the official 2026 theme, **The Extra Mile** (Oct 5–9, 2026), with
 3. **Thank-you marquees**, then **the Wall**: every shared celebration, newest first. It is paginated (`?page=`) and polls every 8s, so new cards spring in while you watch.
 4. How it works, the Ruut / Convert by Ruut story, and the footer.
 
-**The page gets better as people use it.** The hero photo, the corner portraits, the "Just celebrated" chip, the reveal fan and the wall all draw on real celebrations first. Until there are enough, they're topped up with clearly tagged examples (`src/lib/examples.ts`, fictional people and organisations, Unsplash portraits).
+**The page gets better as people use it.** The hero photo, the corner portraits, the "Just celebrated" chip, the reveal fan and the wall all draw on real celebrations first. Ruut's **CS Week 2025 heroes** (Oluwatobi Ojo, Bukola Willoby, Eromonsele Oigiagbe, Muibat Alaran, from csweek25.ruut.chat) are prepopulated as real celebrations (`src/lib/seeds.ts`) with card pages and a "CS Week 2025 hero" badge. The hero's switching photos also draw on the 2025 community gallery (`src/lib/gallery.ts`). Until there are enough celebrations, the wall is topped up with clearly tagged examples (`src/lib/examples.ts`: fictional people and organisations, free Magnific portraits).
 
 Motion: `motion` (Framer Motion) for the intro, scroll choreography and layout animation, Lenis for smooth scrolling, and a canvas for the pixel trail. Everything respects `prefers-reduced-motion`.
 
@@ -69,4 +69,5 @@ npm run dev
 - Swap the text wordmarks in `src/components/site/Brand.tsx` for official Ruut / Customer Support Hub logo files.
 - Card pages are `noindex` with random IDs, and the recipient's email address is never stored. Showing a card on the public wall is opt-in (default on) in the last step.
 - Set `ADMIN_TOKEN` so you can hide anything inappropriate from the wall. Consider pre-moderation if the wall will be shown on a big screen.
-- Portraits in `public/people` are from Unsplash (see `CREDITS.md`).
+- Stock portraits in `public/people` are free Magnific images, which require attribution. The footer credits them, and `public/people/CREDITS.md` lists each one.
+- The CS Week 2025 photos come from Ruut's own 2025 site. Confirm you're happy to reuse them, especially the unnamed community photos in the hero rotation.
