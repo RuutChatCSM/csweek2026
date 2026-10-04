@@ -1,12 +1,34 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, Bricolage_Grotesque, Figtree, Instrument_Serif } from "next/font/google";
+import localFont from "next/font/local";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
-const poster = Anton({ variable: "--font-poster", subsets: ["latin"], weight: "400" });
-const display = Bricolage_Grotesque({ variable: "--font-display", subsets: ["latin"], weight: ["600", "700", "800"] });
-const serif = Instrument_Serif({ variable: "--font-serif", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
-const body = Figtree({ variable: "--font-body", subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
+const poster = localFont({ variable: "--font-poster", src: "../assets/fonts/anton-latin-400-normal.woff" });
+const display = localFont({
+  variable: "--font-display",
+  src: [
+    { path: "../assets/fonts/bricolage-grotesque-latin-600-normal.woff", weight: "600" },
+    { path: "../assets/fonts/bricolage-grotesque-latin-700-normal.woff", weight: "700" },
+    { path: "../assets/fonts/bricolage-grotesque-latin-800-normal.woff", weight: "800" },
+  ],
+});
+const serif = localFont({
+  variable: "--font-serif",
+  src: [
+    { path: "../assets/fonts/instrument-serif-latin-400-normal.woff", weight: "400", style: "normal" },
+    { path: "../assets/fonts/instrument-serif-latin-400-italic.woff", weight: "400", style: "italic" },
+  ],
+});
+const body = localFont({
+  variable: "--font-body",
+  src: [
+    { path: "../assets/fonts/figtree-latin-400-normal.woff", weight: "400" },
+    { path: "../assets/fonts/figtree-latin-500-normal.woff", weight: "500" },
+    { path: "../assets/fonts/figtree-latin-600-normal.woff", weight: "600" },
+    { path: "../assets/fonts/figtree-latin-700-normal.woff", weight: "700" },
+    { path: "../assets/fonts/figtree-latin-800-normal.woff", weight: "800" },
+  ],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
