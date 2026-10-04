@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sendWithConvert } from "@/lib/email/convert";
+import { addToContactList, sendWithConvert } from "@/lib/email/convert";
 import { celebrationEmail } from "@/lib/email/template";
 import { getFeedPage } from "@/lib/feed";
 import { clientIp, rateLimit, siteUrl } from "@/lib/site";
@@ -98,13 +98,20 @@ export async function POST(req: Request) {
       const { subject, html, text } = celebrationEmail({ card, recipientFirstName, siteUrl: base });
       // Save first so the image URL inside the email resolves as soon as it's opened.
       await saveCard(card);
-      const result = await sendWithConvert({
-        id: card.id,
-        to: { email: recipientEmail, name: recipientFirstName },
-        subject,
-        html,
-        text,
-      });
+      // Recipient's last name, when the card's name starts with the first name they gave us.
+      const [cardFirst, ...rest] = name.split(" ");
+      const lastName = cardFirst.toLowerCase() === recipientFirstName.toLowerCase() ? rest.join(" ") : "";
+      const [result] = await Promise.all([
+        sendWithConvert({
+          id: card.id,
+          to: { email: recipientEmail, name: recipientFirstName },
+          subject,
+          html,
+          text,
+        }),
+        // Every recipient also lands in the CS Week contact list in Convert.
+        addToContactList({ email: recipientEmail, firstName: recipientFirstName, lastName, businessName: org }),
+      ]);
       card.email = { status: result.status, recipientFirstName };
     }
   }

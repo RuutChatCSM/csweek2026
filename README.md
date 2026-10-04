@@ -48,8 +48,7 @@ LinkedIn, X and WhatsApp use their share URLs with the card page link; the OG im
 
 ## Email: Convert by Ruut
 
-`src/lib/email/convert.ts` POSTs a generic transactional payload (`from`, `to`, `subject`, `html`, `text`, `tags`) to `CONVERT_API_URL` with a Bearer key.
-**Adjust `buildPayload` to match Convert's real API contract.** Without credentials, emails are saved to `.data/outbox` and can be previewed in the browser.
+`src/lib/email/convert.ts` sends a transactional message through `POST /messages` and adds recipients to Convert contact list 21 through `POST /contact_lists/21/contacts`. Set `CONVERT_API_KEY` and `CONVERT_CONTACT_LIST_ID=21` in the server environment. The key needs `messages:write` and `contacts:write` scopes. Without a key, emails are saved to `.data/outbox` for local preview; contacts are not added.
 The template is in `src/lib/email/template.ts` and is table-based so it works in email clients.
 
 ## Run it
