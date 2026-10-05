@@ -1,7 +1,6 @@
 import "server-only";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { SEED_CARDS } from "./seeds";
 import type { FeedItem, StoredCard } from "./types";
 
 /**
@@ -15,6 +14,13 @@ import type { FeedItem, StoredCard } from "./types";
 const TTL_SECONDS = 60 * 60 * 24 * 365;
 const DATA_DIR = join(process.cwd(), ".data");
 const FEED_KEY = "cards:feed";
+const LEGACY_HERO_IDS = [
+  "cs25-oluwatobi-ojo",
+  "cs25-bukola-willoby",
+  "cs25-eromonsele-oigiagbe",
+  "cs25-muibat-alaran",
+];
+const legacyHeroIds = new Set(LEGACY_HERO_IDS);
 
 const upstash =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
@@ -54,7 +60,7 @@ export async function saveCard(card: StoredCard, { index = false } = {}) {
 
 /** Returns a card, or null when missing or hidden by a moderator (unless `includeHidden`). */
 export async function getCard(id: string, { includeHidden = false } = {}): Promise<StoredCard | null> {
-  if (!ID_RE.test(id)) return null;
+  if (!ID_RE.test(id) || (legacyHeroIds.has(id) && !includeHidden)) return null;
   let card: StoredCard | null = null;
   if (upstash) {
     const { result } = await redis(["GET", `card:${id}`]);
@@ -66,7 +72,6 @@ export async function getCard(id: string, { includeHidden = false } = {}): Promi
       return null;
     }
   }
-  card ??= SEED_CARDS.find((c) => c.id === id) ?? null;
   return card && (includeHidden || !card.hidden) ? card : null;
 }
 
@@ -95,26 +100,18 @@ export function toFeedItem(card: StoredCard): FeedItem {
   };
 }
 
-// --- Prepopulated cards ---------------------------------------------------------
-
-let seeded: Promise<void> | null = null;
-
-/** Idempotently stores the CS Week 2025 heroes (see lib/seeds.ts) as the oldest wall entries. */
-export function ensureSeeds() {
-  seeded ??= (async () => {
-    for (const card of SEED_CARDS) {
-      if (upstash) {
-        const { result } = await redis(["SET", `card:${card.id}`, JSON.stringify(card), "NX"]);
-        if (result === "OK") await redis(["RPUSH", FEED_KEY, card.id]);
-      } else if (!(await getCard(card.id, { includeHidden: true }))) {
-        await saveCard(card);
-      }
-    }
-  })().catch((e) => {
-    seeded = null;
-    console.error("[seeds] failed", e);
-  });
-  return seeded;
+// Remove the previously seeded heroes from the live feed while retaining their
+// card records, so they can be restored later if needed.
+let legacyHeroesRemoved: Promise<void> | null = null;
+function removeLegacyHeroesFromFeed() {
+  if (!upstash) return Promise.resolve();
+  legacyHeroesRemoved ??= Promise.all(LEGACY_HERO_IDS.map((id) => redis(["LREM", FEED_KEY, 0, id])))
+    .then(() => {})
+    .catch((error) => {
+      legacyHeroesRemoved = null;
+      throw error;
+    });
+  return legacyHeroesRemoved;
 }
 
 // --- Feed (public wall) -------------------------------------------------------
@@ -140,7 +137,7 @@ async function fsFeed(): Promise<StoredCard[]> {
         }
       }),
     )
-  ).filter((c): c is StoredCard => !!c && c.listed === true && !c.hidden);
+  ).filter((c): c is StoredCard => !!c && c.listed === true && !c.hidden && !legacyHeroIds.has(c.id));
   cards.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   feedCache = { at: Date.now(), ids: cards };
   return cards;
@@ -148,7 +145,7 @@ async function fsFeed(): Promise<StoredCard[]> {
 
 /** Newest-first page of listed cards. */
 export async function listFeed(offset: number, limit: number): Promise<{ items: FeedItem[]; total: number }> {
-  await ensureSeeds();
+  await removeLegacyHeroesFromFeed();
   if (upstash) {
     const [{ result: total }, { result: ids }] = await Promise.all([
       redis(["LLEN", FEED_KEY]),

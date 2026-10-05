@@ -35,7 +35,7 @@ const MOBILE_LINES = ["Celebrating", "the people", "who go the", "extra mile"];
  */
 type Slide = { key: string; src: string; label: string; position?: string };
 
-/** Interleaves real celebrations, Ruut's CS Week 2025 community and examples into one photo pool. */
+/** Interleaves real celebrations and examples into one photo pool. */
 function buildPool(people: FeedItem[], gallery: string[]): Slide[] {
   const real = people.filter((p) => p.photoUrl && !p.example);
   const examples = people.filter((p) => p.photoUrl && p.example);
@@ -507,7 +507,7 @@ function LatestChip({ people, enabled }: { people: FeedItem[]; enabled: boolean 
   const item = recent[tick % Math.max(1, recent.length)];
   if (!item) return null;
   const href = item.example ? "#wall" : `/c/${item.id}`;
-  const label = item.example ? "Example" : item.featured ? "CS Week 2025 hero" : "Just celebrated";
+  const label = item.example ? "Example" : "Just celebrated";
   return (
     <motion.a
       href={href}
@@ -647,11 +647,6 @@ function FanCard({
               <div className="absolute inset-0 mix-blend-multiply" style={{ background: theme.bg }} />
               <div className="absolute inset-0 mix-blend-screen opacity-40" style={{ background: theme.duo[1] }} />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-3 pt-12">
-                {item.featured && (
-                  <p className="mb-1.5 inline-block rounded-sm bg-road px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink">
-                    CS Week 2025 hero
-                  </p>
-                )}
                 <p className="poster text-[clamp(22px,2.4vw,38px)] leading-none text-white">{item.name}</p>
                 <p className="mt-1 truncate text-[11px] font-semibold text-white/80">
                   {item.role} · {item.org}

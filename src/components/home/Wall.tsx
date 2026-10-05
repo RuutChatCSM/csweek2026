@@ -206,11 +206,6 @@ function WallTile({ item, index, isNew }: { item: FeedItem; index: number; isNew
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
             style={{ objectPosition: item.photoPosition ?? "50% 25%" }}
           />
-          {item.featured && (
-            <span className="absolute left-3 top-3 rounded-sm bg-road px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink">
-              CS Week 2025 hero
-            </span>
-          )}
           {item.example && (
             <span className="absolute left-3 top-3 rounded-sm bg-ink/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cream">
               Example
