@@ -68,5 +68,5 @@ npm run dev
 - Swap the text wordmarks in `src/components/site/Brand.tsx` for official Ruut / Customer Support Hub logo files.
 - Card pages are `noindex` with random IDs, and the recipient's email address is never stored. Showing a card on the public wall is opt-in (default on) in the last step.
 - Set `ADMIN_TOKEN` so you can hide anything inappropriate from the wall. Consider pre-moderation if the wall will be shown on a big screen.
-- Stock portraits in `public/people` are free Magnific images, which require attribution. The footer credits them, and `public/people/CREDITS.md` lists each one.
-- The CS Week 2025 photos come from Ruut's own 2025 site. Confirm you're happy to reuse them, especially the unnamed community photos in the hero rotation.
+- Example portraits in `public/people` are free Pexels images. The footer credits Pexels, and `public/people/CREDITS.md` lists each source.
+- The CS Week 2025 hero and community photos remain in `public/` for reference, but are not displayed on the site.
