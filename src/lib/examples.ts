@@ -3,7 +3,7 @@ import type { FeedItem } from "./types";
 /**
  * Sample celebrations (fictional people and organisations) that keep the hero, the reveal fan
  * and the wall feeling full until enough real celebrations arrive. Tagged "Example" on the wall.
- * Photos: free Magnific (formerly Freepik) stock — see public/people/CREDITS.md.
+ * Photos: free Pexels stock — see public/people/CREDITS.md.
  */
 const E = (
   file: string,

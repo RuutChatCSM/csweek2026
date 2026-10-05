@@ -8,19 +8,15 @@ import type { FeedItem, FeedPage } from "@/lib/types";
 import { PixelSprite } from "./PixelSprite";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
-const POLL_MS = 8000;
-
 /**
  * The Wall of Celebrations: every card people choose to share, newest first.
- * Paginated, and it refreshes itself so new celebrations slide in while you watch.
+ * Paginated, with fresh data loaded when a visitor opens the page or changes pages.
  */
 export function Wall({ initial }: { initial: FeedPage }) {
   const [data, setData] = useState<FeedPage>(initial);
   const [fresh, setFresh] = useState<Set<string>>(new Set());
-  const [pendingNew, setPendingNew] = useState(0);
   const [loading, setLoading] = useState(false);
   const top = useRef<HTMLDivElement>(null);
-  const latestTotal = useRef(initial.total);
 
   const load = useCallback(async (page: number, { scroll = false } = {}) => {
     setLoading(true);
@@ -32,8 +28,6 @@ export function Wall({ initial }: { initial: FeedPage }) {
         setFresh(new Set(prev.page === next.page ? next.items.filter((i) => !known.has(i.id)).map((i) => i.id) : []));
         return next;
       });
-      latestTotal.current = next.total;
-      if (page === 1) setPendingNew(0);
       const url = new URL(window.location.href);
       if (page > 1) url.searchParams.set("page", String(page));
       else url.searchParams.delete("page");
@@ -44,21 +38,6 @@ export function Wall({ initial }: { initial: FeedPage }) {
     }
   }, []);
 
-  // Live updates: page 1 refreshes in place; other pages show a "new" pill.
-  useEffect(() => {
-    const t = window.setInterval(async () => {
-      if (document.hidden) return;
-      if (data.page === 1) {
-        void load(1);
-      } else {
-        const res = await fetch("/api/cards?page=1", { cache: "no-store" });
-        const head = (await res.json()) as FeedPage;
-        setPendingNew(Math.max(0, head.total - latestTotal.current));
-      }
-    }, POLL_MS);
-    return () => window.clearInterval(t);
-  }, [data.page, load]);
-
   const pages = Array.from({ length: data.pages }, (_, i) => i + 1);
 
   return (
@@ -68,7 +47,7 @@ export function Wall({ initial }: { initial: FeedPage }) {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-ink/60">
-              <span className="live-dot h-2.5 w-2.5 rounded-full bg-stop" /> Live · updates as people celebrate
+              <span className="live-dot h-2.5 w-2.5 rounded-full bg-stop" /> Celebrations from the community
             </p>
             <h2 className="poster mt-3 text-[clamp(52px,9vw,148px)] leading-[0.92] text-ink">
               The wall of <span className="text-highway">celebrations</span>
@@ -84,21 +63,6 @@ export function Wall({ initial }: { initial: FeedPage }) {
             </Link>
           </div>
         </div>
-
-        <AnimatePresence>
-          {pendingNew > 0 && (
-            <motion.button
-              type="button"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              onClick={() => load(1, { scroll: true })}
-              className="sticky top-4 z-20 mx-auto mt-6 flex items-center gap-2 rounded-full bg-stop px-4 py-2 text-sm font-bold text-white shadow-lg"
-            >
-              ↑ {pendingNew} new celebration{pendingNew > 1 ? "s" : ""}, see the latest
-            </motion.button>
-          )}
-        </AnimatePresence>
 
         <motion.ul layout className={`mt-12 columns-1 gap-5 sm:columns-2 lg:columns-3 ${loading ? "opacity-70" : ""} transition-opacity`}>
           <AnimatePresence mode="popLayout" initial={false}>

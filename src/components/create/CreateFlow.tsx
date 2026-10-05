@@ -3,6 +3,7 @@
 import confetti from "canvas-confetti";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useEffectEvent, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { CardPreview } from "@/components/card/CardPreview";
 import { PixelSprite } from "@/components/home/PixelSprite";
@@ -44,6 +45,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const firstNameOf = (name: string) => name.trim().split(/\s+/)[0] ?? "";
 
 export function CreateFlow({ initialMode, fromEmail }: { initialMode: CelebrationMode; fromEmail: boolean }) {
+  const router = useRouter();
   const [mode, setMode] = useState<CelebrationMode>(initialMode);
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
@@ -115,6 +117,7 @@ export function CreateFlow({ initialMode, fromEmail }: { initialMode: Celebratio
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Something went wrong. Please try again.");
       setResult(json as Result);
+      router.refresh();
       window.scrollTo({ top: 0, behavior: "smooth" });
       celebrate();
     } catch (e) {
@@ -825,7 +828,11 @@ function Done({
             {listed && (
               <>
                 {" · "}
-                <Link href="/#wall" className="font-semibold text-ink underline decoration-road decoration-2 underline-offset-2">
+                <Link
+                  href="/#wall"
+                  prefetch={false}
+                  className="font-semibold text-ink underline decoration-road decoration-2 underline-offset-2"
+                >
                   See it on the wall
                 </Link>
               </>

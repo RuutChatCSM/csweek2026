@@ -1,26 +1,26 @@
 # Photo credits
 
-## Stock portraits — Magnific (formerly Freepik), free license
+## Stock portraits — Pexels, free license
 
-Free Magnific assets require attribution. The site footer credits Magnific and these authors.
+These watermark-free example portraits are from [Pexels](https://www.pexels.com/license/). The photos are used for clearly labelled fictional example cards; the people pictured are not the named characters.
 
-- `m01.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/portrait-smiling-call-center-operator-talking-audio-headset-mic_416753993.htm
-- `m02.jpg` — Image by ASphotofamily on Magnific — https://www.magnific.com/free-photo/african-american-woman-works-call-center-operator-customer-service-agent-wearing-microphone-headsets-working-laptop_25376384.htm
-- `m03.jpg` — Image by kroshka__nastya on Magnific — https://www.magnific.com/free-photo/beautiful-african-american-woman-green-wall-manager-call-centre-worker-happy-adorable-smiling-welcoming-all-calls_16716766.htm
-- `m06.jpg` — Image by ASphotofamily on Magnific — https://www.magnific.com/free-photo/african-american-woman-works-call-center-operator-customer-service-agent-wearing-microphone-headsets-working-laptop_25376394.htm
-- `m08.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/happy-call-center-agent-providing-step-by-step-guidance-customers_418373778.htm
-- `m09.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/portrait-smiling-technical-support-specialist-call-center-office_418373741.htm
-- `m10.jpg` — Image by diana.grytsku on Magnific — https://www.magnific.com/free-photo/operator-hot-line-portrait-cheerful-african-customer-service-representative-with-headset-call-center_8472124.htm
-- `m11.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/portrait-african-american-young-woman-wearing-headphones-smiling-camera_20461099.htm
-- `m12.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/authentic-smiling-african-american-man-using-laptop-headphones-work-from-home-learn-freel_16047352.htm
-- `m13.jpg` — Image by diana.grytsku on Magnific — https://www.magnific.com/free-photo/young-african-american-manager-with-stubble-sitting-front-open-laptop-wearing-earphones-while-having-video-conference-call-with-business-partners_8472132.htm
-- `m14.jpg` — Image by partystock on Magnific — https://www.magnific.com/free-photo/portrait-woman-business-embrace-confidence-posing-beauty-black-african-american-isolated-gray-background_25767305.htm
-- `m15.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/black-agent-with-headset-giving-thumbs-up_416930795.htm
-- `m16.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/portrait-woman-smiling-sitting-desk-with-computer-working-from-home-business-project-young-adult-looking-camera-using-monitor-with-keyboard-remote-work_22454307.htm
-- `m17.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/african-american-employee-using-headset-customer-service-job-asnwering-call-about-telemarketing-sales-male-operator-working-call-center-office-help-clients-helpline_25700454.htm
-- `m18.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/female-sales-agent-talking-phone-call-client-helping-people-customer-support-service-woman-using-headphones-give-assistance-call-center-workstation-helpdesk_27103603.htm
-- `m19.jpg` — Image by DC Studio on Magnific — https://www.magnific.com/free-photo/young-woman-using-audio-headset-computer-call-center-job-offering-helpline-assistance-people-female-consultant-talking-clients-customer-care-service-helping-with-telemarketing_27103606.htm
-- `m20.jpg` — Image by kroshka__nastya on Magnific — https://www.magnific.com/free-photo/black-african-man-casual-yellow-wall-blue-hair-call-centre-worker-happy-customer-support-operator-with-headphones_14093569.htm
+- `m01.jpg` — https://www.pexels.com/photo/smiling-man-wearing-black-headset-7689644/
+- `m02.jpg` — https://www.pexels.com/photo/a-woman-wearing-a-headset-7709192/
+- `m03.jpg` — https://www.pexels.com/photo/photo-of-a-call-center-agent-looking-away-7709295/
+- `m06.jpg` — https://www.pexels.com/photo/a-woman-using-black-headphones-while-working-7658203/
+- `m08.jpg` — https://www.pexels.com/photo/woman-with-afro-hair-holding-cellphone-8867208/
+- `m09.jpg` — https://www.pexels.com/photo/a-call-center-agent-holding-a-clipboard-8867176/
+- `m10.jpg` — https://www.pexels.com/photo/a-man-in-brown-button-up-long-sleeve-shirt-using-a-laptop-7681983/
+- `m11.jpg` — https://www.pexels.com/photo/woman-in-brown-blazer-wearing-black-headset-looking-at-camera-5467591/
+- `m12.jpg` — https://www.pexels.com/photo/close-up-shot-of-a-man-wearing-eyeglasses-and-headphones-5453807/
+- `m13.jpg` — https://www.pexels.com/photo/a-man-wearing-a-headphones-while-working-7709114/
+- `m14.jpg` — https://www.pexels.com/photo/woman-wearing-headset-working-at-the-office-8101449/
+- `m15.jpg` — https://www.pexels.com/photo/man-in-white-crew-neck-shirt-wearing-black-framed-eyeglasses-11938228/
+- `m16.jpg` — https://www.pexels.com/photo/woman-in-white-shirt-wearing-black-headphones-7689659/
+- `m17.jpg` — https://www.pexels.com/photo/man-in-black-suit-sitting-by-the-table-while-smiling-at-the-camera-5467561/
+- `m18.jpg` — https://www.pexels.com/photo/portrait-of-a-woman-wearing-a-headset-with-a-microphone-in-an-office-8192015/
+- `m19.jpg` — https://www.pexels.com/photo/smiling-woman-wearing-a-headset-7658430/
+- `m20.jpg` — https://www.pexels.com/photo/a-man-wearing-headphones-7658358/
 
 ## CS Week 2025 heroes and community (`/public/heroes`, `/public/community`)
 

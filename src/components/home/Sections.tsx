@@ -259,10 +259,9 @@ export function HomeFooter() {
             </a>
             <br />
             Stock portraits:{" "}
-            <a href="https://www.magnific.com" target="_blank" rel="noopener noreferrer" className="underline">
-              Magnific
-            </a>{" "}
-            (DC Studio, ASphotofamily, diana.grytsku, kroshka__nastya, partystock)
+            <a href="https://www.pexels.com" target="_blank" rel="noopener noreferrer" className="underline">
+              Pexels
+            </a>
           </p>
         </div>
       </div>
